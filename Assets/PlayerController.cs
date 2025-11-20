@@ -46,6 +46,10 @@ public class PlayerController : MonoBehaviour{
         Animate();
     }
 
+    void LateUpdate(){
+        ApplyVelocity();
+    }
+
     // Camera //
 
     void MouseLook(){
@@ -70,7 +74,6 @@ public class PlayerController : MonoBehaviour{
         grounded = _CharacterController.isGrounded;
         SetTargetVelocity();
         LerpVelocity();
-        ApplyVelocity();
     }
 
     void SetTargetVelocity(){
