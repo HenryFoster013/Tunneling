@@ -10,10 +10,8 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] Camera Cam;
     [SerializeField] Animator CameraAnim;
 
-    [Header(" - Public Modifiers - ")]
+    [Header(" - Modifiers - ")]
     public float MouseSens = 1f;
-
-    // Constant Modifiers //
 
     // Camera
     const float base_fov = 80;
@@ -32,13 +30,12 @@ public class PlayerController : MonoBehaviour{
     // Misc
     const int frame_delay = 5;
 
-    // Private Variables //
-
+    // Private Variables
     float x_rot, y_rot, head_tilt;
     bool grounded, walking, sprinting, crouching, camera_delayed;
     Vector3 target_velocity, true_velocity;
 
-    // Setup //
+    // MAIN //
 
     void Start(){
         StartCoroutine(CameraDelay());
@@ -49,8 +46,6 @@ public class PlayerController : MonoBehaviour{
             yield return new WaitForEndOfFrame();
         camera_delayed = true;
     }
-
-    // Update //
 
     void Update(){
         SetCursor();
@@ -122,8 +117,7 @@ public class PlayerController : MonoBehaviour{
 
     void Animate(){
         SetHeadBop();
-        SidestepRotation();
-        FOVMod();
+        CameraFX();
     }
 
     // Camera
@@ -137,29 +131,24 @@ public class PlayerController : MonoBehaviour{
         CameraAnim.SetInteger("speed", speed);
     }
 
-    void SidestepRotation(){
+    void CameraFX(){
         head_tilt = Mathf.Lerp(head_tilt, GetHeadAngle(), Time.deltaTime * camera_swivel_speed);
-    }
-
-    float GetHeadAngle(){
-        float val = 0f;
-        if(Input.GetAxisRaw("Horizontal") > 0.5f)
-            val = -camera_swivel_amplitude;
-        else if (Input.GetAxisRaw("Horizontal") < -0.5f)
-            val = camera_swivel_amplitude;
-        return val;
-    }
-
-    void FOVMod(){
         Cam.fieldOfView = Mathf.Lerp(Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
     }
 
+    float GetHeadAngle(){
+        if(Input.GetAxisRaw("Horizontal") > 0.5f)
+            return -camera_swivel_amplitude;
+        if (Input.GetAxisRaw("Horizontal") < -0.5f)
+            return camera_swivel_amplitude;
+        return 0f;
+    }
+
     float GetFOV(){
-        float final_fov = base_fov;
-        if(walking)
-            final_fov = walk_fov;
         if(sprinting)
-            final_fov = sprint_fov;
-        return final_fov;
+            return sprint_fov;
+        if(walking)
+            return walk_fov;
+        return base_fov;
     }
 }
