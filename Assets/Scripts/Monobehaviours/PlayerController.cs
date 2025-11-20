@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GenericUtils;
 
 public class PlayerController : MonoBehaviour{
 
     [Header(" - Main - ")]
     [SerializeField] CharacterController _CharacterController;
+    [SerializeField] SoundEffectLookup SFX_Lookup;
+    [Header(" - Camera - ")]
     [SerializeField] Transform Head;
     [SerializeField] Camera Cam;
     [SerializeField] Animator CameraAnim;
+    [Header(" - Misc - ")]
 
     [Header(" - Modifiers - ")]
     public float MouseSens = 500f;
@@ -31,12 +35,14 @@ public class PlayerController : MonoBehaviour{
     const float gravity = 10f;
     const float fall_speed = 10f;
     const float floor_force = 1f;
+    // SFX
+    const float walk_ftsp_period = 0.5f;
     // Misc
     const int frame_delay = 5;
 
     // Private Variables
-    float x_rot, y_rot, head_tilt, head_height;
-    bool grounded, walking, sprinting, crouching, camera_delayed;
+    float x_rot, y_rot, head_tilt, head_height, footstep_timer;
+    bool grounded, walking, sprinting, crouching, camera_delayed, footstep_buffer;
     Vector3 target_velocity, true_velocity;
 
     // MAIN //
@@ -61,6 +67,7 @@ public class PlayerController : MonoBehaviour{
         MouseLook();
         Movement();
         Animate();
+        SoundEffects();
     }
 
     // Camera //
@@ -185,4 +192,30 @@ public class PlayerController : MonoBehaviour{
         return 0;
     }
 
+    // Sound //
+
+    public void SoundEffects(){
+        CheckFootsteps();
+    }
+
+    void CheckFootsteps(){
+        
+        if(!walking){
+            footstep_timer = 0;
+            return;
+        }
+
+        float delay = walk_ftsp_period;
+        if(sprinting)
+            delay = delay / sprint_multipler;
+
+        if(footstep_timer > delay){
+            footstep_timer = 0;
+            PlaySFX("Footstep", SFX_Lookup);
+        }
+        else{
+            if(walking)
+                footstep_timer += Time.deltaTime;
+        }
+    }
 }
