@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour{
 
     void GatherBoolean(){
         grounded = _CharacterController.isGrounded;
-        walking = Mathf.Abs(true_velocity.x) > 0.5f) || Mathf.Abs(true_velocity.z) > 0.5f;
+        walking = Mathf.Abs(true_velocity.x) > 0.5f || Mathf.Abs(true_velocity.z) > 0.5f;
         crouching = Input.GetKeyDown(KeyCode.LeftControl);
         sprinting = !crouching && Input.GetKey(KeyCode.LeftShift) && Input.GetAxisRaw("Vertical") > 0.5f;
     }
