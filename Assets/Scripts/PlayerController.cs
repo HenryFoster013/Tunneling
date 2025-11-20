@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] Animator CameraAnim;
 
     [Header(" - Modifiers - ")]
-    public float MouseSens = 1f;
+    public float MouseSens = 500f;
 
     // Camera
     const float base_fov = 80;
@@ -20,25 +20,34 @@ public class PlayerController : MonoBehaviour{
     const float fov_change = 6;
     const float camera_swivel_amplitude = 3.5f;
     const float camera_swivel_speed = 1.5f;
+    const float base_height = 0.5f;
+    const float crouch_height = -0.2f;
+    const float head_height_speed = 18f;
     // Movement
     const float movement_speed = 5f;
     const float sprint_multipler = 1.8f;
+    const float crouch_multiplier = 0.5f;
     const float acceleration = 10f;
     const float gravity = 10f;
     const float fall_speed = 10f;
-    const float floor_force = 2f;
+    const float floor_force = 1f;
     // Misc
     const int frame_delay = 5;
 
     // Private Variables
-    float x_rot, y_rot, head_tilt;
+    float x_rot, y_rot, head_tilt, head_height;
     bool grounded, walking, sprinting, crouching, camera_delayed;
     Vector3 target_velocity, true_velocity;
 
     // MAIN //
 
     void Start(){
+        DefaultValues();
         StartCoroutine(CameraDelay());
+    }
+
+    void DefaultValues(){
+        head_height = base_height;
     }
 
     IEnumerator CameraDelay(){ // Prevents 
@@ -51,7 +60,6 @@ public class PlayerController : MonoBehaviour{
         SetCursor();
         MouseLook();
         Movement();
-        ApplyVelocity();
         Animate();
     }
 
@@ -61,11 +69,10 @@ public class PlayerController : MonoBehaviour{
         if(!camera_delayed)
             return;
 
-        float x_mod = Input.GetAxis("Mouse X") * MouseSens;
-        float y_mod = -1 * Input.GetAxis("Mouse Y") * MouseSens;
+        float x_mod = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
+        float y_mod = -1 * Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
         x_rot = Mathf.Clamp(x_rot + y_mod, -90f, 90f);
         y_rot += x_mod;
-        Head.localRotation = Quaternion.Euler(x_rot, y_rot, head_tilt);
     }
 
     void SetCursor(){
@@ -78,25 +85,37 @@ public class PlayerController : MonoBehaviour{
         GatherBoolean();
         SetTargetVelocity();
         LerpVelocity();
+        ApplyVelocity();
     }
 
     void GatherBoolean(){
         grounded = _CharacterController.isGrounded;
         walking = Mathf.Abs(true_velocity.x) > 0.5f || Mathf.Abs(true_velocity.z) > 0.5f;
-        crouching = Input.GetKeyDown(KeyCode.LeftControl);
+        crouching = Input.GetKey(KeyCode.LeftControl);
         sprinting = !crouching && Input.GetKey(KeyCode.LeftShift) && Input.GetAxisRaw("Vertical") > 0.5f;
     }
 
     void SetTargetVelocity(){
-        float mult = 1;
+        float mult = MovementSpeedMultiplier();
+        target_velocity = new Vector3(MovementAxis("Horizontal") * mult, FallSpeed(), MovementAxis("Vertical") * mult);        
+    }
+
+    float MovementAxis(string name){
+        return Input.GetAxisRaw(name) * movement_speed;
+    }
+
+    float MovementSpeedMultiplier(){
+        if(crouching)
+            return crouch_multiplier;
         if(sprinting)
-            mult = sprint_multipler;
-        float x = Input.GetAxisRaw("Horizontal") * movement_speed * mult;
-        float z = Input.GetAxisRaw("Vertical") * movement_speed * mult;
-        float y = -1f;
+            return sprint_multipler;
+        return 1f;
+    }
+
+    float FallSpeed(){
         if(!grounded)
-            y = -fall_speed;
-        target_velocity = new Vector3(x, y, z);        
+            return -fall_speed;
+        return -floor_force;
     }
 
     void LerpVelocity(){
@@ -116,25 +135,25 @@ public class PlayerController : MonoBehaviour{
     // Animation ///
 
     void Animate(){
-        SetHeadBop();
-        CameraFX();
+        LerpValues();
+        ApplyAnimations();
     }
 
     // Camera
 
-    void SetHeadBop(){
-        int speed = 0;
-        if(walking)
-            speed = 1;
-        if(sprinting)
-            speed = 2;
-        CameraAnim.SetInteger("speed", speed);
-    }
-
-    void CameraFX(){
+    void LerpValues(){
         head_tilt = Mathf.Lerp(head_tilt, GetHeadAngle(), Time.deltaTime * camera_swivel_speed);
+        head_height = Mathf.Lerp(head_height, GetHeadHeight(), Time.deltaTime * head_height_speed);
         Cam.fieldOfView = Mathf.Lerp(Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
     }
+
+    void ApplyAnimations(){
+        Head.localPosition = new Vector3(0, head_height, 0);
+        Head.localRotation = Quaternion.Euler(x_rot, y_rot, head_tilt);
+        CameraAnim.SetInteger("speed", GetHeadBop());
+    }
+
+    // State Calculations
 
     float GetHeadAngle(){
         if(Input.GetAxisRaw("Horizontal") > 0.5f)
@@ -144,6 +163,12 @@ public class PlayerController : MonoBehaviour{
         return 0f;
     }
 
+    float GetHeadHeight(){
+        if(crouching)
+            return crouch_height;
+        return base_height;
+    }
+
     float GetFOV(){
         if(sprinting)
             return sprint_fov;
@@ -151,4 +176,13 @@ public class PlayerController : MonoBehaviour{
             return walk_fov;
         return base_fov;
     }
+
+    int GetHeadBop(){
+        if(sprinting)
+            return 2;
+        if(walking)
+            return 1;
+        return 0;
+    }
+
 }
