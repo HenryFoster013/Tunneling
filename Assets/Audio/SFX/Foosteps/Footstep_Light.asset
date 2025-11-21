@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 145db9d5b91535341a353e4acc28fcf2, type: 3}
-  m_Name: Footstep
+  m_Name: Footstep_Light
   m_EditorClassIdentifier: 
-  Name: Footstep
+  Name: Footstep_Light
   BaseClip: {fileID: 0}
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   ClipRange:
@@ -26,7 +26,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 482f194e7673e9c4abd66756828c56ac, type: 3}
   - {fileID: 8300000, guid: f20b69068e347c74aab0d3d1d17d894f, type: 3}
   - {fileID: 8300000, guid: 069dc59d81850f14aabc66fb11b744d3, type: 3}
-  BasePitch: 1
+  BasePitch: 1.2
   PitchVariation: 0.1
-  BaseVolume: 0.4
+  BaseVolume: 0.2
   VolumeVariation: 0.075

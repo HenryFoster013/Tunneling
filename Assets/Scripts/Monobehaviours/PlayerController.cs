@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using static GenericUtils;
 
+// This manages player movement
+
 public class PlayerController : MonoBehaviour{
 
     [Header(" - Main - ")]
     [SerializeField] CharacterController _CharacterController;
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [Header(" - Camera - ")]
+    [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
     [SerializeField] Camera Cam;
     [SerializeField] Animator CameraAnim;
@@ -16,23 +19,25 @@ public class PlayerController : MonoBehaviour{
 
     [Header(" - Modifiers - ")]
     public float MouseSens = 500f;
+    [HideInInspector] public bool CanLook = true;
+    [HideInInspector] public bool CanMove = true;
 
     // Camera
     const float base_fov = 80;
     const float walk_fov = 82;
     const float sprint_fov = 100;
     const float fov_change = 6;
-    const float camera_swivel_amplitude = 3.5f;
-    const float camera_swivel_speed = 1.5f;
+    const float camera_swivel_amplitude = 5f;
+    const float camera_swivel_speed = 2f;
     const float base_height = 0.5f;
     const float crouch_height = -0.2f;
     const float head_height_speed = 18f;
+    const float cam_float_speed = 35f;
     // Movement
     const float movement_speed = 5f;
     const float sprint_multipler = 1.8f;
     const float crouch_multiplier = 0.5f;
     const float acceleration = 10f;
-    const float gravity = 10f;
     const float fall_speed = 10f;
     const float floor_force = 1f;
     // SFX
@@ -41,13 +46,16 @@ public class PlayerController : MonoBehaviour{
     const int frame_delay = 5;
 
     // Private Variables
-    float x_rot, y_rot, head_tilt, head_height, footstep_timer;
+    float x_rot, y_rot, displayed_x_rot, displayed_y_rot, head_tilt, head_height, footstep_timer;
     bool grounded, walking, sprinting, crouching, camera_delayed, footstep_buffer;
-    Vector3 target_velocity, true_velocity;
+    Vector3 target_velocity, true_velocity, ground_normal;
 
     // MAIN //
 
     void Start(){
+            
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
         DefaultValues();
         StartCoroutine(CameraDelay());
     }
@@ -64,22 +72,28 @@ public class PlayerController : MonoBehaviour{
 
     void Update(){
         SetCursor();
-        MouseLook();
         Movement();
-        Animate();
         SoundEffects();
+        Animate();
+    }
+
+    void LateUpdate(){
+        MouseLook();
     }
 
     // Camera //
 
     void MouseLook(){
-        if(!camera_delayed)
+        if(!camera_delayed || !CanLook)
             return;
 
         float x_mod = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
         float y_mod = -1 * Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
-        x_rot = Mathf.Clamp(x_rot + y_mod, -90f, 90f);
+        x_rot = Mathf.Clamp(x_rot + y_mod, -85f, 85f);
         y_rot += x_mod;
+        displayed_x_rot = Mathf.Lerp(displayed_x_rot, x_rot, cam_float_speed * Time.deltaTime);
+        displayed_y_rot = Mathf.Lerp(displayed_y_rot, y_rot, cam_float_speed * Time.deltaTime);
+        Head.localRotation = Quaternion.Euler(displayed_x_rot, displayed_y_rot, head_tilt);
     }
 
     void SetCursor(){
@@ -89,22 +103,67 @@ public class PlayerController : MonoBehaviour{
     // Movement //
 
     public void Movement(){
+        if(!CanMove){
+            CleanBoolean();
+            return;
+        }
+
         GatherBoolean();
+        SetGroundNormal();
         SetTargetVelocity();
         LerpVelocity();
         ApplyVelocity();
     }
 
+    void CleanBoolean(){
+        grounded = true;
+        walking = false;
+        crouching = false;
+        sprinting = false;
+    }
+
     void GatherBoolean(){
         grounded = _CharacterController.isGrounded;
-        walking = Mathf.Abs(true_velocity.x) > 0.5f || Mathf.Abs(true_velocity.z) > 0.5f;
-        crouching = Input.GetKey(KeyCode.LeftControl);
-        sprinting = !crouching && Input.GetKey(KeyCode.LeftShift) && Input.GetAxisRaw("Vertical") > 0.5f;
+        walking = Mathf.Abs(target_velocity.x) > 0.5f || Mathf.Abs(target_velocity.z) > 0.5f;
+        ManageCrouching();
+        sprinting = !crouching && Input.GetButton("Sprint") && Input.GetAxisRaw("Vertical") > 0.5f;
+    }
+
+    void ManageCrouching(){
+        bool new_move = (Input.GetButton("Crouch") != crouching);
+        crouching = Input.GetButton("Crouch");
+        if(!new_move)
+            return;
+        if(crouching)
+            PlaySFX("Crouch_Down", SFX_Lookup);
+        else
+            PlaySFX("Crouch_Up", SFX_Lookup);
+    }
+
+    void SetGroundNormal(){
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + (Vector3.up * 0.2f), Vector3.down, out hit, 0.25f)){
+            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+            if(slopeAngle <= 45f)
+                ground_normal = hit.normal;
+            else
+                ground_normal = Vector3.up;
+        } 
+        else
+            ground_normal = Vector3.up;
     }
 
     void SetTargetVelocity(){
-        float mult = MovementSpeedMultiplier();
-        target_velocity = new Vector3(MovementAxis("Horizontal") * mult, FallSpeed(), MovementAxis("Vertical") * mult);        
+        Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        input = input.normalized * movement_speed * MovementSpeedMultiplier();
+        Vector3 camera_forward = Vector3.ProjectOnPlane(Cam.transform.forward, Vector3.up).normalized;
+        Vector3 camera_right = Vector3.ProjectOnPlane(Cam.transform.right, Vector3.up).normalized;
+        target_velocity = (camera_forward * input.z + camera_right * input.x);
+    }
+
+    void ApplyVelocity(){        
+        Vector3 horizontalMovement = Vector3.ProjectOnPlane(true_velocity, ground_normal);
+        _CharacterController.Move((horizontalMovement + (Vector3.up * FallSpeed())) * Time.deltaTime);
     }
 
     float MovementAxis(string name){
@@ -126,17 +185,7 @@ public class PlayerController : MonoBehaviour{
     }
 
     void LerpVelocity(){
-        float true_x = Mathf.Lerp(true_velocity.x, target_velocity.x, acceleration * Time.deltaTime);
-        float true_y = Mathf.Lerp(true_velocity.y, target_velocity.y, gravity * Time.deltaTime);
-        float true_z = Mathf.Lerp(true_velocity.z, target_velocity.z, acceleration * Time.deltaTime);
-        true_velocity = new Vector3(true_x, true_y, true_z);
-    }
-
-    void ApplyVelocity(){
-        Quaternion y_rot = Quaternion.Euler(0, Head.eulerAngles.y, 0);
-        Vector3 move_dir = ((y_rot * Vector3.forward) * true_velocity.z + (y_rot * Vector3.right) * true_velocity.x);
-        move_dir = move_dir + new Vector3(0, true_velocity.y, 0);
-        _CharacterController.Move((move_dir) * Time.deltaTime);
+        true_velocity = Vector3.Lerp(true_velocity, target_velocity, Time.deltaTime * acceleration);
     }
 
     // Animation ///
@@ -155,8 +204,7 @@ public class PlayerController : MonoBehaviour{
     }
 
     void ApplyAnimations(){
-        Head.localPosition = new Vector3(0, head_height, 0);
-        Head.localRotation = Quaternion.Euler(x_rot, y_rot, head_tilt);
+        HeadHolder.localPosition = new Vector3(0, head_height, 0);
         CameraAnim.SetInteger("speed", GetHeadBop());
     }
 
@@ -205,17 +253,26 @@ public class PlayerController : MonoBehaviour{
             return;
         }
 
-        float delay = walk_ftsp_period;
-        if(sprinting)
-            delay = delay / sprint_multipler;
-
-        if(footstep_timer > delay){
+        if(footstep_timer > GetFootstepDelay()){
             footstep_timer = 0;
-            PlaySFX("Footstep", SFX_Lookup);
+            FootstepSFX();
         }
         else{
             if(walking)
                 footstep_timer += Time.deltaTime;
         }
+    }
+
+    float GetFootstepDelay(){
+        if(sprinting)
+            return walk_ftsp_period / sprint_multipler;
+        return walk_ftsp_period;
+    }
+
+    void FootstepSFX(){
+        if(!crouching)
+            PlaySFX("Footstep", SFX_Lookup);
+        else
+            PlaySFX("Footstep_Light", SFX_Lookup);
     }
 }
