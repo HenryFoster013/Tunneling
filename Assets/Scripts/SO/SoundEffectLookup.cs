@@ -10,7 +10,7 @@ public class SoundEffectLookup : ScriptableObject
     public SoundEffect GetSFX(string name){
         SoundEffect result = null;
         for(int i = 0; i < Sounds.Length && result == null; i++){
-            if(Sounds[i].Name.ToUpper() == name.ToUpper())
+            if(Sounds[i].GetName().ToUpper() == name.ToUpper())
                 result = Sounds[i];
         }
         return result;

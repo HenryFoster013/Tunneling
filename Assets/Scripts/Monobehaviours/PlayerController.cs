@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GenericUtils;
+using static SoundUtils;
 
-// This manages player movement
+// This manages player movement only
 
 public class PlayerController : MonoBehaviour{
 
@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] Transform Head;
     [SerializeField] Camera Cam;
     [SerializeField] Animator CameraAnim;
-    [Header(" - Misc - ")]
-
     [Header(" - Modifiers - ")]
     public float MouseSens = 500f;
     [HideInInspector] public bool CanLook = true;
@@ -29,8 +27,8 @@ public class PlayerController : MonoBehaviour{
     const float fov_change = 6;
     const float camera_swivel_amplitude = 5f;
     const float camera_swivel_speed = 2f;
-    const float base_height = 0.5f;
-    const float crouch_height = -0.2f;
+    const float base_height = 1.5f;
+    const float crouch_height = 0.8f;
     const float head_height_speed = 18f;
     const float cam_float_speed = 35f;
     // Movement
@@ -53,7 +51,6 @@ public class PlayerController : MonoBehaviour{
     // MAIN //
 
     void Start(){
-            
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
         DefaultValues();
@@ -123,16 +120,24 @@ public class PlayerController : MonoBehaviour{
     }
 
     void GatherBoolean(){
-        grounded = _CharacterController.isGrounded;
+        ManageGrounded();
         walking = Mathf.Abs(target_velocity.x) > 0.5f || Mathf.Abs(target_velocity.z) > 0.5f;
         ManageCrouching();
         sprinting = !crouching && Input.GetButton("Sprint") && Input.GetAxisRaw("Vertical") > 0.5f;
     }
 
+    void ManageGrounded(){
+        if(grounded != _CharacterController.isGrounded){
+            grounded = _CharacterController.isGrounded;
+            PlaySFX("Footstep", SFX_Lookup);
+            PlaySFX("Footstep", SFX_Lookup);
+        }
+    }
+
     void ManageCrouching(){
         bool new_move = (Input.GetButton("Crouch") != crouching);
         crouching = Input.GetButton("Crouch");
-        if(!new_move)
+        if(!new_move || !grounded)
             return;
         if(crouching)
             PlaySFX("Crouch_Down", SFX_Lookup);
@@ -247,12 +252,10 @@ public class PlayerController : MonoBehaviour{
     }
 
     void CheckFootsteps(){
-        
         if(!walking){
             footstep_timer = 0;
             return;
         }
-
         if(footstep_timer > GetFootstepDelay()){
             footstep_timer = 0;
             FootstepSFX();
@@ -270,6 +273,8 @@ public class PlayerController : MonoBehaviour{
     }
 
     void FootstepSFX(){
+        if(!grounded)
+            return;
         if(!crouching)
             PlaySFX("Footstep", SFX_Lookup);
         else
