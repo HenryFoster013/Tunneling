@@ -9,9 +9,10 @@ public class ItemDescription : ScriptableObject
     [SerializeField] string Name;
     [SerializeField] string Description;
 
-    [Header(" - Tags - ")]
+    [Header(" - Inventory - ")]
     [SerializeField] bool CanCarry;
     [SerializeField] bool CanEquip;
+    [SerializeField] Vector2 AdditionalSize;
 
     [Header(" - 2D - ")]
     [SerializeField] GameObject PovModel;
@@ -35,4 +36,5 @@ public class ItemDescription : ScriptableObject
     public float GetWeight(){return Weight;}
     public float GetBounciness(){return Bounciness;}
     public SoundEffect GetCollisionSound(){return CollisionSound;}
+    public Vector2 GetAdditionalSize(){return AdditionalSize;}
 }

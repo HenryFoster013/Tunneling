@@ -14,9 +14,11 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
     [SerializeField] Camera Cam;
+    [SerializeField] Camera OverlayCam;
     [SerializeField] Animator CameraAnim;
     [Header(" - Modifiers - ")]
-    public float MouseSens = 500f;
+    public float MouseSens = 150f;
+    public float ControllerSens = 50f;
     [HideInInspector] public bool CanLook = true;
     [HideInInspector] public bool CanMove = true;
 
@@ -24,6 +26,8 @@ public class PlayerController : MonoBehaviour{
     const float base_fov = 80;
     const float walk_fov = 82;
     const float sprint_fov = 100;
+    const float overlay_walk_fov = 76;
+    const float overlay_sprint_fov = 68;
     const float fov_change = 6;
     const float camera_swivel_amplitude = 5f;
     const float camera_swivel_speed = 2f;
@@ -86,6 +90,10 @@ public class PlayerController : MonoBehaviour{
 
         float x_mod = Input.GetAxis("Mouse X") * MouseSens * Time.deltaTime;
         float y_mod = -1 * Input.GetAxis("Mouse Y") * MouseSens * Time.deltaTime;
+        x_mod += Input.GetAxis("Controller X") * ControllerSens * Time.deltaTime;
+        y_mod += Input.GetAxis("Controller Y") * ControllerSens * Time.deltaTime;
+
+
         x_rot = Mathf.Clamp(x_rot + y_mod, -85f, 85f);
         y_rot += x_mod;
         displayed_x_rot = Mathf.Lerp(displayed_x_rot, x_rot, cam_float_speed * Time.deltaTime);
@@ -206,6 +214,7 @@ public class PlayerController : MonoBehaviour{
         head_tilt = Mathf.Lerp(head_tilt, GetHeadAngle(), Time.deltaTime * camera_swivel_speed);
         head_height = Mathf.Lerp(head_height, GetHeadHeight(), Time.deltaTime * head_height_speed);
         Cam.fieldOfView = Mathf.Lerp(Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
+        OverlayCam.fieldOfView = Mathf.Lerp(OverlayCam.fieldOfView, GetOverlayFOV(), fov_change * Time.deltaTime);
     }
 
     void ApplyAnimations(){
@@ -235,6 +244,14 @@ public class PlayerController : MonoBehaviour{
         if(walking)
             return walk_fov;
         return base_fov;
+    }
+
+    float GetOverlayFOV(){
+        if(sprinting)
+            return overlay_sprint_fov;
+        if(walking)
+            return overlay_walk_fov;
+        return base_fov; 
     }
 
     int GetHeadBop(){
