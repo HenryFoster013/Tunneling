@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] CharacterController _CharacterController;
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] LayerMask GroundLayer;
+    [SerializeField] PlayerHeadsUpUI HeadsUp;
     [Header(" - Camera - ")]
     [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
@@ -186,7 +187,6 @@ public class PlayerController : MonoBehaviour{
     void ApplyVelocity(){        
         Vector3 horizontalMovement = Vector3.ProjectOnPlane(true_velocity, ground_normal);
         _CharacterController.Move((horizontalMovement + (Vector3.up * FallSpeed())) * Time.deltaTime);
-        print(FallSpeed());
     }
 
     float MovementAxis(string name){
@@ -230,6 +230,7 @@ public class PlayerController : MonoBehaviour{
     void ApplyAnimations(){
         HeadHolder.localPosition = new Vector3(0, head_height, 0);
         CameraAnim.SetInteger("speed", GetHeadBop());
+        HeadsUp.SetSprinting(sprinting);
     }
 
     // State Calculations

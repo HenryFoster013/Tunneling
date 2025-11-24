@@ -1002,7 +1002,7 @@ GameObject:
   - component: {fileID: 826099652}
   - component: {fileID: 826099653}
   m_Layer: 6
-  m_Name: Viewmodel
+  m_Name: ' Viewmodel Holder'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2085,6 +2085,7 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
+  HeadsUp: {fileID: 826099653}
   HeadHolder: {fileID: 1189497555}
   Head: {fileID: 1145883511}
   Cam: {fileID: 681648186}
