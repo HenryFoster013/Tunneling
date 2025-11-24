@@ -10,7 +10,7 @@ public class PlayerHeadsUpUI : MonoBehaviour{
     const float position_lerp_speed = 38f;
     const float rotation_lerp_speed = 22f;
 
-    const float sprint_swing_degree = 6f;
+    const float sprint_swing_degree = 5f;
     const float sprint_swing_speed = 10f;
     const float swing_allowance = 2.2f;
 
