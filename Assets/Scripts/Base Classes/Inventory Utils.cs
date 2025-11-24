@@ -54,20 +54,23 @@ namespace InventoryUtils{
         public bool CoordTaken(int x, int y){return CoordTaken(new Vector2Int(x, y));}
         public bool CoordTaken(Vector2Int coord){
             int index = CoordToIndex(coord);
-            if(!ValidSingularBound(index))
+            if(!ValidSingularBound(index, inventory))
                 return false;
             return occupied_tiles[index];
         }
 
         bool ValidMap(){
+            /*
             if(!CheckRectangular(map))
                 return;
             ItemInstance[] generated_slots = MapToSlots(map);
-            
+            */
+
+            return false;
         }
 
         bool ValidBounds(ItemInstance item, int location, ItemInstance[] slots){
-            if(!ValidSingularBound(location))
+            if(!ValidSingularBound(location, slots))
                 return false;
 
             int end_pos = location;
@@ -83,8 +86,7 @@ namespace InventoryUtils{
         // Generation
 
         public void LoadMap(InventoryMap map){
-            if(!ValidMap(map))
-                return;
+
         }
 
         public bool AddItem(ItemInstance item, int location){
@@ -92,7 +94,7 @@ namespace InventoryUtils{
 
             if(item == null)
                 return false;
-            if(!ValidBounds(item, location))
+            if(!ValidBounds(item, location, inventory))
                 return false;
             if(!CanFitItem(item, location))
                 return false;
@@ -108,7 +110,7 @@ namespace InventoryUtils{
 
         bool CanFitItem(ItemInstance item, int location){
             RefreshOccupation();
-            if(!ValidBounds(item, location))
+            if(!ValidBounds(item, location, inventory))
                 return false;
             foreach(int pos in CoveredLocations(item, location)){
                 if(occupied_tiles[pos])
@@ -119,7 +121,7 @@ namespace InventoryUtils{
 
         List<int> CoveredLocations(ItemInstance item, int location){
             List<int> locales = new List<int>();
-            if(!ValidBounds(item, location))
+            if(!ValidBounds(item, location, inventory))
                 return locales;
 
             for(int row = 0; row < item.Scale().y; row++){
