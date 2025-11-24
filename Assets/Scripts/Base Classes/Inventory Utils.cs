@@ -6,15 +6,15 @@ namespace InventoryUtils{
 
     public class ItemInstance{
         
-        public ItemDescription description {private set; get;}
+        public ItemDefinition Definition {private set; get;}
         
-        public ItemInstance(ItemDescription desc){
-            description = desc;
+        public ItemInstance(ItemDefinition desc){
+            Definition = desc;
         }
 
-        // Description Interactions //
+        // Definition Interactions //
 
-        public Vector2Int Scale(){return new Vector2Int(1,1) + description.GetAdditionalSize();}
+        public Vector2Int Scale(){return new Vector2Int(1,1) + Definition.GetAdditionalSize();}
     }
 
     public class Inventory{
@@ -28,7 +28,7 @@ namespace InventoryUtils{
         bool[] occupied_tiles;
 
         // Constants
-        static readonly Vector2Int default_scale = new Vector2Int(8, 3);
+        static readonly Vector2Int default_scale = new Vector2Int(8, 4);
         const int line_width = 8;
         
         // Creation //
@@ -44,9 +44,48 @@ namespace InventoryUtils{
 
         // Functionality //
 
-        // Public Methods
+        // Getters
 
         public int Size(){return (scale.x * scale.y);}
+        public Vector2Int Scale(){return scale;}
+
+        // Validation
+
+        public bool CoordTaken(int x, int y){return CoordTaken(new Vector2Int(x, y));}
+        public bool CoordTaken(Vector2Int coord){
+            int index = CoordToIndex(coord);
+            if(!ValidSingularBound(index))
+                return false;
+            return occupied_tiles[index];
+        }
+
+        bool ValidMap(){
+            if(!CheckRectangular(map))
+                return;
+            ItemInstance[] generated_slots = MapToSlots(map);
+            
+        }
+
+        bool ValidBounds(ItemInstance item, int location, ItemInstance[] slots){
+            if(!ValidSingularBound(location))
+                return false;
+
+            int end_pos = location;
+            for(int i = 0; i < item.Scale().y - 1; i++)
+                end_pos += line_width;
+            end_pos += item.Scale().x;
+
+            return (end_pos < slots.Length);
+        }
+
+        bool ValidSingularBound(int location, ItemInstance[] slots){return (location > -1 && location < slots.Length);}
+
+        // Generation
+
+        public void LoadMap(InventoryMap map){
+            if(!ValidMap(map))
+                return;
+        }
 
         public bool AddItem(ItemInstance item, int location){
             RefreshOccupation();
@@ -64,6 +103,8 @@ namespace InventoryUtils{
         }
 
         // Item Fitting
+
+        int CoordToIndex(Vector2Int coord){return coord.x + (coord.y * line_width);}
 
         bool CanFitItem(ItemInstance item, int location){
             RefreshOccupation();
@@ -89,20 +130,6 @@ namespace InventoryUtils{
             }
             return locales;
         }
-
-        bool ValidBounds(ItemInstance item, int location){
-            if(!ValidSingularBound(location))
-                return false;
-
-            int end_pos = location;
-            for(int i = 0; i < item.Scale().y - 1; i++)
-                end_pos += line_width;
-            end_pos += item.Scale().x;
-
-            return (end_pos < inventory.Length);
-        }
-
-        bool ValidSingularBound(int location){return (location > -1 && location < inventory.Length);}
 
         // Occupation Management
 
