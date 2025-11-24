@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour{
     [Header(" - Main - ")]
     [SerializeField] CharacterController _CharacterController;
     [SerializeField] SoundEffectLookup SFX_Lookup;
+    [SerializeField] LayerMask GroundLayer;
     [Header(" - Camera - ")]
     [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
@@ -49,8 +50,10 @@ public class PlayerController : MonoBehaviour{
 
     // Private Variables
     float x_rot, y_rot, displayed_x_rot, displayed_y_rot, head_tilt, head_height, footstep_timer;
-    bool grounded, walking, sprinting, crouching, camera_delayed, footstep_buffer;
+    bool grounded_buffer, walking, sprinting, crouching, camera_delayed, footstep_buffer;
     Vector3 target_velocity, true_velocity, ground_normal;
+
+    public bool grounded;
 
     // MAIN //
 
@@ -114,7 +117,6 @@ public class PlayerController : MonoBehaviour{
         }
 
         GatherBoolean();
-        SetGroundNormal();
         SetTargetVelocity();
         LerpVelocity();
         ApplyVelocity();
@@ -135,11 +137,16 @@ public class PlayerController : MonoBehaviour{
     }
 
     void ManageGrounded(){
-        if(grounded != _CharacterController.isGrounded){
-            grounded = _CharacterController.isGrounded; // Need a new grounding check here baws
+        SetGrounded();
+        PlayGroundedSFX();
+    }
+
+    void PlayGroundedSFX(){
+        if(grounded && grounded != grounded_buffer){
             PlaySFX("Footstep", SFX_Lookup);
             PlaySFX("Footstep", SFX_Lookup);
         }
+        grounded_buffer = grounded;
     }
 
     void ManageCrouching(){
@@ -153,15 +160,17 @@ public class PlayerController : MonoBehaviour{
             PlaySFX("Crouch_Up", SFX_Lookup);
     }
 
-    void SetGroundNormal(){
+    void SetGrounded(){
         RaycastHit hit;
-        if (Physics.Raycast(transform.position + (Vector3.up * 0.2f), Vector3.down, out hit, 0.25f)){
-            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-            if(slopeAngle <= 45f)
+        grounded = false;
+        float radius = _CharacterController.radius;
+        if (Physics.SphereCast(transform.position + (Vector3.up * radius), radius, Vector3.down, out hit, 0.15f, GroundLayer)){
+            grounded = true;
+            if (Vector3.Angle(hit.normal, Vector3.up) < 45f)
                 ground_normal = hit.normal;
             else
                 ground_normal = Vector3.up;
-        } 
+        }
         else
             ground_normal = Vector3.up;
     }
@@ -177,6 +186,7 @@ public class PlayerController : MonoBehaviour{
     void ApplyVelocity(){        
         Vector3 horizontalMovement = Vector3.ProjectOnPlane(true_velocity, ground_normal);
         _CharacterController.Move((horizontalMovement + (Vector3.up * FallSpeed())) * Time.deltaTime);
+        print(FallSpeed());
     }
 
     float MovementAxis(string name){
