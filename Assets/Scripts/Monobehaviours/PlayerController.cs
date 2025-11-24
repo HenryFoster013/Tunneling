@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour{
 
     void ManageGrounded(){
         if(grounded != _CharacterController.isGrounded){
-            grounded = _CharacterController.isGrounded;
+            grounded = _CharacterController.isGrounded; // Need a new grounding check here baws
             PlaySFX("Footstep", SFX_Lookup);
             PlaySFX("Footstep", SFX_Lookup);
         }
