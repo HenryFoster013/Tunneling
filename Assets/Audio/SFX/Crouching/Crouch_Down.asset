@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Crouch_Down
   BaseClip: {fileID: 8300000, guid: 0a230846a1b40d14ba978a909c256666, type: 3}
-  Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   ClipRange: []
+  Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
   PitchVariation: 0.1
-  BaseVolume: 0.2
+  BaseVolume: 0.18
   VolumeVariation: 0.05
+  _3D: 0
+  Radius: 0

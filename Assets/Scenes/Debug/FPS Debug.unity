@@ -2018,6 +2018,7 @@ GameObject:
   - component: {fileID: 2109655521}
   - component: {fileID: 2109655520}
   - component: {fileID: 2109655522}
+  - component: {fileID: 2109655523}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -2077,6 +2078,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   HeadsUp: {fileID: 826099653}
+  _ViewModelController: {fileID: 2109655523}
   HeadHolder: {fileID: 1189497555}
   Head: {fileID: 1145883511}
   Cam: {fileID: 681648186}
@@ -2087,3 +2089,19 @@ MonoBehaviour:
   CanLook: 1
   CanMove: 1
   grounded: 0
+--- !u!114 &2109655523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109655519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b242e00976d37643a049974cb4ae1d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 1
+  HeadsUp: {fileID: 826099653}
+  SFX_Lookup: {fileID: 11400000, guid: 4dde26c82c18a8645adc92154555d5c3, type: 2}
+  ObjectOne: {fileID: 1085185749}

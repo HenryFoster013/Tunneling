@@ -16,7 +16,7 @@ MonoBehaviour:
   Description: Null
   CanCarry: 0
   CanEquip: 0
-  AdditionalSize: {x: 1, y: 1}
+  AdditionalSize: {x: 2, y: 0}
   PovModel: {fileID: 0}
   Model: {fileID: 0}
   _Rigidbody: 0

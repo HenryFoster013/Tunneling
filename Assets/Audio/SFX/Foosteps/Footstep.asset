@@ -26,9 +26,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f20b69068e347c74aab0d3d1d17d894f, type: 3}
   - {fileID: 8300000, guid: 069dc59d81850f14aabc66fb11b744d3, type: 3}
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
-  BasePitch: 1
+  BasePitch: 1.1
   PitchVariation: 0.1
-  BaseVolume: 0.3
+  BaseVolume: 0.4
   VolumeVariation: 0.075
   _3D: 0
   Radius: 0

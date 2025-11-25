@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] LayerMask GroundLayer;
     [SerializeField] PlayerHeadsUpUI HeadsUp;
+    [SerializeField] ViewModelController _ViewModelController;
     [Header(" - Camera - ")]
     [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
@@ -78,6 +79,7 @@ public class PlayerController : MonoBehaviour{
     void Update(){
         SetCursor();
         Movement();
+        Interactions();
         SoundEffects();
         Animate();
     }
@@ -209,6 +211,17 @@ public class PlayerController : MonoBehaviour{
 
     void LerpVelocity(){
         true_velocity = Vector3.Lerp(true_velocity, target_velocity, Time.deltaTime * acceleration);
+    }
+    
+    // Interactions //
+
+    void Interactions(){
+        UseItem();
+    }
+
+    void UseItem(){
+        if(Input.GetMouseButtonDown(0))
+            _ViewModelController.DoSomething();
     }
 
     // Animation ///
