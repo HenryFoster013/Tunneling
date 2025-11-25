@@ -29,7 +29,6 @@ namespace InventoryUtils{
 
         // Constants
         static readonly Vector2Int default_scale = new Vector2Int(8, 4);
-        const int line_width = 8;
         
         // Creation //
         
@@ -51,7 +50,10 @@ namespace InventoryUtils{
 
         // Validation
 
-        public bool CoordTaken(int x, int y){return CoordTaken(new Vector2Int(x, y));}
+        public bool CoordTaken(int x, int y){
+            return CoordTaken(new Vector2Int(x, y));
+        }
+
         public bool CoordTaken(Vector2Int coord){
             int index = CoordToIndex(coord);
             if(!ValidSingularBound(index, inventory))
@@ -59,42 +61,39 @@ namespace InventoryUtils{
             return occupied_tiles[index];
         }
 
-        bool ValidMap(){
-            /*
-            if(!CheckRectangular(map))
-                return;
-            ItemInstance[] generated_slots = MapToSlots(map);
-            */
-
-            return false;
-        }
-
-        bool ValidBounds(ItemInstance item, int location, ItemInstance[] slots){
-            if(!ValidSingularBound(location, slots))
+        bool ValidBounds(ItemInstance item, int location){
+            if(!ValidSingularBound(location, inventory))
                 return false;
 
             int end_pos = location;
             for(int i = 0; i < item.Scale().y - 1; i++)
-                end_pos += line_width;
+                end_pos += scale.x;
             end_pos += item.Scale().x;
 
-            return (end_pos < slots.Length);
+            return (end_pos < inventory.Length);
         }
 
-        bool ValidSingularBound(int location, ItemInstance[] slots){return (location > -1 && location < slots.Length);}
+        bool ValidSingularBound(int location){return (location > -1 && location < inventory.Length);}
+
+        public bool FullValidation(){
+            
+            // check size is rectaungular within the line width
+
+            // check every item fits within bounds
+
+            // check every item fits within occupation
+
+            return true;
+        }
 
         // Generation
-
-        public void LoadMap(InventoryMap map){
-
-        }
 
         public bool AddItem(ItemInstance item, int location){
             RefreshOccupation();
 
             if(item == null)
                 return false;
-            if(!ValidBounds(item, location, inventory))
+            if(!ValidBounds(item, location))
                 return false;
             if(!CanFitItem(item, location))
                 return false;
@@ -106,11 +105,11 @@ namespace InventoryUtils{
 
         // Item Fitting
 
-        int CoordToIndex(Vector2Int coord){return coord.x + (coord.y * line_width);}
+        int CoordToIndex(Vector2Int coord){return coord.x + (coord.y * scale.x);}
 
         bool CanFitItem(ItemInstance item, int location){
             RefreshOccupation();
-            if(!ValidBounds(item, location, inventory))
+            if(!ValidBounds(item, location))
                 return false;
             foreach(int pos in CoveredLocations(item, location)){
                 if(occupied_tiles[pos])
@@ -121,11 +120,11 @@ namespace InventoryUtils{
 
         List<int> CoveredLocations(ItemInstance item, int location){
             List<int> locales = new List<int>();
-            if(!ValidBounds(item, location, inventory))
+            if(!ValidBounds(item, location))
                 return locales;
 
             for(int row = 0; row < item.Scale().y; row++){
-                int start_point = location + (row * line_width);
+                int start_point = location + (row * scale.x);
                 for(int pos = start_point; pos < start_point + item.Scale().x; pos++){
                     locales.Add(pos);
                 }
