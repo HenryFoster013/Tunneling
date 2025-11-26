@@ -1088,7 +1088,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   HeadsUp: {fileID: 5897461096895600518}
-  UpperHeadPivot: {fileID: 2615063844632500719}
+  UpperHeadPivot: {fileID: 5897461098201668240}
   LowerHeadPivot: {fileID: 5897461098156940084}
   POV_Cam: {fileID: 5897461096485859449}
   WorldOverlay: {fileID: 4171022459031425929}
