@@ -13,9 +13,10 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] LayerMask GroundLayer;
     [SerializeField] PlayerHeadsUpUI HeadsUp;
     [Header(" - Camera - ")]
-    [SerializeField] Transform HeadHolder;
-    [SerializeField] Transform Head;
-    [SerializeField] Camera Cam;
+    [SerializeField] Transform UpperHeadPivot;
+    [SerializeField] Transform LowerHeadPivot;
+    [SerializeField] Camera POV_Cam;
+    [SerializeField] Camera WorldOverlay;
     [SerializeField] Camera OverlayCam;
     [SerializeField] Animator CameraAnim;
     [Header(" - Modifiers - ")]
@@ -103,7 +104,7 @@ public class PlayerController : MonoBehaviour{
         y_rot += x_mod;
         displayed_x_rot = Mathf.Lerp(displayed_x_rot, x_rot, cam_float_speed * Time.deltaTime);
         displayed_y_rot = Mathf.Lerp(displayed_y_rot, y_rot, cam_float_speed * Time.deltaTime);
-        Head.localRotation = Quaternion.Euler(displayed_x_rot, displayed_y_rot, head_tilt);
+        LowerHeadPivot.localRotation = Quaternion.Euler(displayed_x_rot, displayed_y_rot, head_tilt);
     }
 
     // Movement //
@@ -180,8 +181,8 @@ public class PlayerController : MonoBehaviour{
     void SetTargetVelocity(){
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         input = input.normalized * movement_speed * MovementSpeedMultiplier();
-        Vector3 camera_forward = Vector3.ProjectOnPlane(Cam.transform.forward, Vector3.up).normalized;
-        Vector3 camera_right = Vector3.ProjectOnPlane(Cam.transform.right, Vector3.up).normalized;
+        Vector3 camera_forward = Vector3.ProjectOnPlane(POV_Cam.transform.forward, Vector3.up).normalized;
+        Vector3 camera_right = Vector3.ProjectOnPlane(POV_Cam.transform.right, Vector3.up).normalized;
         target_velocity = (camera_forward * input.z + camera_right * input.x);
     }
 
@@ -224,12 +225,14 @@ public class PlayerController : MonoBehaviour{
     void LerpValues(){
         head_tilt = Mathf.Lerp(head_tilt, GetHeadAngle(), Time.deltaTime * camera_swivel_speed);
         head_height = Mathf.Lerp(head_height, GetHeadHeight(), Time.deltaTime * head_height_speed);
-        Cam.fieldOfView = Mathf.Lerp(Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
+        float pov_fov = Mathf.Lerp(POV_Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
+        POV_Cam.fieldOfView = pov_fov;
+        WorldOverlay.fieldOfView = pov_fov;
         OverlayCam.fieldOfView = Mathf.Lerp(OverlayCam.fieldOfView, GetOverlayFOV(), fov_change * Time.deltaTime);
     }
 
     void ApplyAnimations(){
-        HeadHolder.localPosition = new Vector3(0, head_height, 0);
+        UpperHeadPivot.localPosition = new Vector3(0, head_height, 0);
         CameraAnim.SetInteger("speed", GetHeadBop());
         HeadsUp.SetSprinting(sprinting);
     }

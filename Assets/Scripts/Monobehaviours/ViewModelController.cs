@@ -60,32 +60,41 @@ public class ViewModelController : MonoBehaviour{
 
     // Gestures //
 
-    public void ThumbsUp(){
+    bool GeneralGesture(){
+        if(gesture_time > 0.333f)
+            return false;
         DisableAll(ref AllGestures);
+        gesture_time = 1f;
+        return true;
+    }
+
+    public void ThumbsUp(){
+        if(!GeneralGesture())
+            return;
+        
         G_ThumbsUp.SetActive(true);
         PlaySFX("Grunt_Yes", SFX_Lookup);
-        gesture_time = 1f;
     }
 
     public void FlipOff(){
-        DisableAll(ref AllGestures);
+        if(!GeneralGesture())
+            return;
         G_FlipOff.SetActive(true);
         PlaySFX("Grunt_No", SFX_Lookup);
-        gesture_time = 1f;
     }
 
     public void PointThere(){
-        DisableAll(ref AllGestures);
+        if(!GeneralGesture())
+            return;
         G_There.SetActive(true);
         PlaySFX("Grunt_There", SFX_Lookup);
-        gesture_time = 1f;
     }
 
     public void PointHere(){
-        DisableAll(ref AllGestures);
+        if(!GeneralGesture())
+            return;
         G_Here.SetActive(true);
         PlaySFX("Grunt_Here", SFX_Lookup);
-        gesture_time = 1f;
     }
 
     // Search Actions //
