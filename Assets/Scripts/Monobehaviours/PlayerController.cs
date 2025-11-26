@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour{
 
     void UseItem(){
         if(Input.GetMouseButtonDown(0))
-            _ViewModelController.DoSomething();
+            _ViewModelController.UseItem();
     }
 
     // Animation ///

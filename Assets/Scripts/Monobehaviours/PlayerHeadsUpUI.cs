@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GenericUtils;
 
 public class PlayerHeadsUpUI : MonoBehaviour{
 
     [Header(" - Main - ")]
     [SerializeField] Transform Reference;
-    [SerializeField] Transform SubViewmodel;
+    [SerializeField] Transform LeftHand;
+    [SerializeField] Transform RightHand;
     
     const float position_lerp_speed = 38f;
     const float rotation_lerp_speed = 22f;
@@ -15,22 +17,31 @@ public class PlayerHeadsUpUI : MonoBehaviour{
     const float sprint_swing_speed = 10f;
     const float swing_allowance = 2.2f;
     const float recoil_factor = 1f/2f;
-    const float default_recoil_speed = 10f;
 
     bool oriental_swing, sprinting;
-    float current_swing, current_recoil_speed;
-    Vector3 current_recoil, original_vm_pos;
+    float current_swing, right_recoil_speed, left_recoil_speed;
+    Vector3 right_recoil, right_original_pos, left_recoil, left_original_pos;
+
+    // Setup //
 
     void Start(){
-        original_vm_pos = SubViewmodel.localPosition;
+        SetupHands();
     }
+
+    void SetupHands(){
+        right_original_pos = RightHand.localPosition;
+        left_original_pos = LeftHand.localPosition;
+    }
+
+    // Lerping Movement //
 
     void LateUpdate(){
         LerpSwing();
         LerpRecoil();
         transform.rotation = Quaternion.Lerp(transform.rotation, Reference.rotation * Quaternion.Euler(current_swing, 0, 0), rotation_lerp_speed * Time.deltaTime);
         transform.position = new Vector3(transform.position.x, Mathf.Lerp(transform.position.y, Reference.position.y, position_lerp_speed * Time.deltaTime), transform.position.z);
-        SubViewmodel.localPosition = (current_recoil * recoil_factor) + original_vm_pos;
+        RightHand.localPosition = (right_recoil * recoil_factor) + right_original_pos;
+        LeftHand.localPosition = (left_recoil * recoil_factor) + left_original_pos;
     }
 
     public void SetSprinting(bool new_sprint){
@@ -63,14 +74,18 @@ public class PlayerHeadsUpUI : MonoBehaviour{
     }
 
     void LerpRecoil(){
-        current_recoil = Vector3.Lerp(current_recoil, Vector3.zero, Time.deltaTime * current_recoil_speed);
-        if(current_recoil.magnitude < 0.001f)
-            current_recoil = Vector3.zero;
+        LerpToZero(ref right_recoil, ref right_recoil_speed);
+        LerpToZero(ref left_recoil, ref left_recoil_speed);
     }
 
-    public void SetRecoil(Vector3 recoil){SetRecoil(recoil, default_recoil_speed);}
-    public void SetRecoil(Vector3 recoil, float recoil_speed){
-        current_recoil_speed = recoil_speed;
-        current_recoil = recoil;
+    public void SetRecoil(Vector3 recoil, float recoil_speed, bool right_hand){
+        if(right_hand){
+            right_recoil_speed = recoil_speed;
+            right_recoil = recoil;
+        }
+        else{
+            left_recoil_speed = recoil_speed;
+            left_recoil = recoil;
+        }
     }
 }
