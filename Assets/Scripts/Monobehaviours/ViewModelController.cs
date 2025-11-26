@@ -36,11 +36,22 @@ public class ViewModelController : MonoBehaviour{
     [SerializeField] GameObject IrishBeverageDrink;
     const float irish_beverage_time = 1f;
     bool irish_beverage_drinking;
+    float gesture_time;
 
     // Main //
 
     void Start(){
         EquipItem(Type);
+    }
+
+    void Update(){
+        GestureClock();
+    }
+
+    void GestureClock(){
+        gesture_time -= Time.deltaTime;
+        if(gesture_time < 0)
+            DisableAll(ref AllGestures);
     }
 
     public void SetItem(ItemType type){
@@ -52,21 +63,29 @@ public class ViewModelController : MonoBehaviour{
     public void ThumbsUp(){
         DisableAll(ref AllGestures);
         G_ThumbsUp.SetActive(true);
+        PlaySFX("Grunt_Yes", SFX_Lookup);
+        gesture_time = 1f;
     }
 
     public void FlipOff(){
         DisableAll(ref AllGestures);
         G_FlipOff.SetActive(true);
+        PlaySFX("Grunt_No", SFX_Lookup);
+        gesture_time = 1f;
     }
 
     public void PointThere(){
         DisableAll(ref AllGestures);
         G_There.SetActive(true);
+        PlaySFX("Grunt_There", SFX_Lookup);
+        gesture_time = 1f;
     }
 
     public void PointHere(){
         DisableAll(ref AllGestures);
         G_Here.SetActive(true);
+        PlaySFX("Grunt_Here", SFX_Lookup);
+        gesture_time = 1f;
     }
 
     // Search Actions //

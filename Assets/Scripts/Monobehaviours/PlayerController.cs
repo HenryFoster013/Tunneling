@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] LayerMask GroundLayer;
     [SerializeField] PlayerHeadsUpUI HeadsUp;
-    [SerializeField] ViewModelController _ViewModelController;
     [Header(" - Camera - ")]
     [SerializeField] Transform HeadHolder;
     [SerializeField] Transform Head;
@@ -34,8 +33,8 @@ public class PlayerController : MonoBehaviour{
     const float fov_change = 6;
     const float camera_swivel_amplitude = 5f;
     const float camera_swivel_speed = 2f;
-    const float base_height = 1.5f;
-    const float crouch_height = 0.8f;
+    const float base_height = 0f;
+    const float crouch_height = -0.7f;
     const float head_height_speed = 18f;
     const float cam_float_speed = 35f;
     // Movement
@@ -77,9 +76,7 @@ public class PlayerController : MonoBehaviour{
     }
 
     void Update(){
-        SetCursor();
         Movement();
-        Interactions();
         SoundEffects();
         Animate();
     }
@@ -105,10 +102,6 @@ public class PlayerController : MonoBehaviour{
         displayed_x_rot = Mathf.Lerp(displayed_x_rot, x_rot, cam_float_speed * Time.deltaTime);
         displayed_y_rot = Mathf.Lerp(displayed_y_rot, y_rot, cam_float_speed * Time.deltaTime);
         Head.localRotation = Quaternion.Euler(displayed_x_rot, displayed_y_rot, head_tilt);
-    }
-
-    void SetCursor(){
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Movement //
@@ -211,17 +204,6 @@ public class PlayerController : MonoBehaviour{
 
     void LerpVelocity(){
         true_velocity = Vector3.Lerp(true_velocity, target_velocity, Time.deltaTime * acceleration);
-    }
-    
-    // Interactions //
-
-    void Interactions(){
-        UseItem();
-    }
-
-    void UseItem(){
-        if(Input.GetMouseButtonDown(0))
-            _ViewModelController.UseItem();
     }
 
     // Animation ///
