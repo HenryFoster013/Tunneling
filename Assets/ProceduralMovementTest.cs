@@ -1,200 +1,311 @@
 using System.Collections;
-using UnityEditor.Scripting;
 using UnityEngine;
 
 public class ProceduralMovementTest : MonoBehaviour
 {
-    [Header("Torso Object")]
-    public GameObject torso;
+    [System.Serializable] //each leg has this class
+    public class ProceduralLeg
+    {
+        public Transform target;      
+        public Transform distanceRef; 
+        public Transform caster;
 
-    [Header("Ground Detection")]
+        [HideInInspector] public Vector3 horizontalOffset;
+
+        [HideInInspector] public bool stepping = false;
+        [HideInInspector] public float stepProgress = 0f;
+        [HideInInspector] public Vector3 startPos;
+        [HideInInspector] public Vector3 desiredPos;
+        [HideInInspector] public Vector3 plantedPos; //keeps foot locked when not stepping
+
+        public void UpdateGroundPosition(LayerMask groundLayer, float rayStartOffset, float maxDistance = 10f, Vector3 surfaceNormal = default)
+        {
+            if (distanceRef == null) return;
+
+            //if no surface normal provided, default to up
+            if (surfaceNormal == default) surfaceNormal = Vector3.up;
+
+            //ray starts slightly above the foot along the surface normal
+            Vector3 rayOrigin = caster.position;
+            Vector3 rayDirection = -surfaceNormal; // always toward the surface
+
+            Debug.DrawRay(rayOrigin, rayDirection * (maxDistance + rayStartOffset), Color.green);
+
+            if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, Mathf.Infinity, groundLayer))
+            {
+                desiredPos = hit.point;
+                distanceRef.position = desiredPos;
+            }
+        }
+    }
+
+    [Header("Torso")]
+    public GameObject torso;
     public LayerMask groundLayer;
     public float torsoHeightOffset = 0f;
     public float heightSmoothSpeed = 5f;
     private float currentTorsoY;
 
-    [Header("Leg IK Targets")]
-    public Transform frontLeftTarget;
-    public Transform frontRightTarget;
-    public Transform backLeftTarget;
-    public Transform backRightTarget;
-
-    [Header("Leg Distance Pointers (Follow Torso)")]
-    public Transform frontLeftDistance;
-    public Transform frontRightDistance;
-    public Transform backLeftDistance;
-    public Transform backRightDistance;
-    public float legFollowThreshold = 0.5f;
+    [Header("Legs")]
+    public ProceduralLeg frontLeft;
+    public ProceduralLeg frontRight;
+    public ProceduralLeg backLeft;
+    public ProceduralLeg backRight;
 
     [Header("Step Settings")]
-    public float stepHeight = 0.3f;
+    public float legFollowThreshold = 0.5f;
     public float stepSpeed = 2f;
+    public float stepHeight = 0.3f;
+    private bool isPairStepping = false;
+    //step pairs for diagonal walk
+    private ProceduralLeg[][] stepPairs;
+    private int stepPairIndex = 0;
 
-    private bool isStepping = false;
-
-    private bool flStepping = false;
-    private bool frStepping = false;
-    private bool blStepping = false;
-    private bool brStepping = false;
-
-    private int stepIndex = 0; // FL → BL → FR → BR
-
-    private Vector3 FL_position;
-    private Vector3 FR_position;
-    private Vector3 BL_position;
-    private Vector3 BR_position;
+    [Header("Grounded RayCast Settings")]
+    public float rayStartOffset;
 
     void Start()
     {
         currentTorsoY = torso.transform.position.y;
 
-        FL_position = frontLeftTarget.position;
-        FR_position = frontRightTarget.position;
-        BL_position = backLeftTarget.position;
-        BR_position = backRightTarget.position;
+        //set planted positions
+        frontLeft.plantedPos = frontLeft.target.position;
+        frontRight.plantedPos = frontRight.target.position;
+        backLeft.plantedPos = backLeft.target.position;
+        backRight.plantedPos = backRight.target.position;
 
-        //initialize distance pointers relative to the torso
-        frontLeftDistance.position = frontLeftTarget.position;
-        frontRightDistance.position = frontRightTarget.position;
-        backLeftDistance.position = backLeftTarget.position;
-        backRightDistance.position = backRightTarget.position;
-
+        //define diagonal walk pairs
+        stepPairs = new ProceduralLeg[][]
+        {
+            new ProceduralLeg[] { frontLeft, backRight },
+            new ProceduralLeg[] { frontRight, backLeft }
+        };
     }
 
-    void MaintainGrounded()
-    {
-        RaycastHit hit_FL;
-        RaycastHit hit_FR;
-        RaycastHit hit_BL;
-        RaycastHit hit_BR;
-
-        //keep the target points for each limb grounded
-        if (Physics.Raycast(frontLeftTarget.transform.position, Vector3.down, out hit_FL, 10f, groundLayer))
-        {
-            frontLeftTarget.transform.position = hit_FL.point;
-        }
-        if (Physics.Raycast(frontRightTarget.transform.position, Vector3.down, out hit_FR, 10f, groundLayer))
-        {
-            frontRightTarget.transform.position = hit_FR.point;
-        }
-        if (Physics.Raycast(backLeftTarget.transform.position, Vector3.down, out hit_BL, 10f, groundLayer))
-        {
-            backLeftTarget.transform.position = hit_BL.point;
-        }
-        if (Physics.Raycast(backRightTarget.transform.position, Vector3.down, out hit_BR, 10f, groundLayer))
-        {
-            backRightTarget.transform.position = hit_BR.point;
-        }
-    }
-
-    void MaintainLegPosition(){
-        frontLeftTarget.position = FL_position;
-        frontRightTarget.position = FR_position;
-        backLeftTarget.position = BL_position;
-        backRightTarget.position = BR_position;
+    void StoreOffsets(){
+        // store horizontal offsets (might not be needed)
+        frontLeft.horizontalOffset = frontLeft.distanceRef.position - torso.transform.position;
+        frontRight.horizontalOffset = frontRight.distanceRef.position - torso.transform.position;
+        backLeft.horizontalOffset = backLeft.distanceRef.position - torso.transform.position;
+        backRight.horizontalOffset = backRight.distanceRef.position - torso.transform.position;
     }
 
     void Update()
     {
-        MaintainTorsoHeight();
-        if (!isStepping) { MaintainLegPosition(); }
+        MaintainTorsoHeightAndRotation();
         UpdateDistancePointers();
-        BodyDrivenLegStep();
+        GroundedChecker(rayStartOffset);
+        KeepFeetPlanted();
+        PlainRotationManager();
+
+        //check if step pair should move
+        TryStepPairs();
+        UpdateStepMotion();
     }
 
-    void LateUpdate()
-    {
-        MaintainGrounded();
+    void GroundedChecker(float offset){
+    // pass the torso's current surface normal to each leg
+        Vector3 surfaceNormal = torso.transform.up; // or computed via your torso ray
+        frontLeft.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+        frontRight.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+        backLeft.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+        backRight.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+}
+
+    void KeepFeetPlanted(){
+        //keep feet planted when not stepping
+        MaintainPlantedFeet(frontLeft);
+        MaintainPlantedFeet(frontRight);
+        MaintainPlantedFeet(backLeft);
+        MaintainPlantedFeet(backRight);
     }
 
-    //maintain torso height above ground
-    void MaintainTorsoHeight()
+    void UpdateStepMotion(){
+        //update stepping motion
+        UpdateLegStep(frontLeft);
+        UpdateLegStep(frontRight);
+        UpdateLegStep(backLeft);
+        UpdateLegStep(backRight);
+    }
+
+    void PlainRotationManager()
     {
+        //directions to check for a surface: down/forward/back/left/right
+        Vector3[] rayDirections = {
+            Vector3.down,
+            torso.transform.forward,
+            -torso.transform.forward,
+            torso.transform.right,
+            -torso.transform.right
+        };
+
         RaycastHit hit;
-        if (Physics.Raycast(torso.transform.position, Vector3.down, out hit, 10f, groundLayer))
+        Vector3 surfaceNormal = Vector3.up; //default rotation
+        bool hitFound = false;
+
+        foreach (Vector3 dir in rayDirections)
         {
+            Vector3 rayOrigin = torso.transform.position + dir * 0.1f; //slightly offset from center
+            if (Physics.Raycast(rayOrigin, dir, out hit, 2f, groundLayer))
+            {
+                surfaceNormal = hit.normal;
+                hitFound = true;
+                break; //use the first valid hit
+            }
+        }
+
+        if (!hitFound)
+        {
+            surfaceNormal = Vector3.up; //fallback to world up
+        }
+
+        //project the forward direction along the detected surface
+        Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, surfaceNormal).normalized;
+
+        //build rotation aligned to surface normal
+        Quaternion targetRotation = Quaternion.LookRotation(forward, surfaceNormal);
+
+        //smooth it out
+        torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, targetRotation, Time.deltaTime * 5f);
+    }
+
+    // torso height/rotation maintainer
+    void MaintainTorsoHeightAndRotation()
+    {
+        //cast a long ray straight down from above the spider
+        Vector3 rayOrigin = torso.transform.position + Vector3.up * 1f;
+        Vector3 rayDirection = Vector3.down;
+        float rayLength = 50f;
+
+        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, rayLength, groundLayer))
+        {
+            Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.red);
+
+            //smoothly move torso Y to ground height + offset
             float targetY = hit.point.y + torsoHeightOffset;
             currentTorsoY = Mathf.Lerp(currentTorsoY, targetY, Time.deltaTime * heightSmoothSpeed);
 
-            Vector3 pos = torso.transform.position;
-            pos.y = currentTorsoY;
-            torso.transform.position = pos;
+            //optional: Align rotation to surface normal for slopes
+            Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, hit.normal).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(forward, hit.normal);
+            torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
+        else
+        {
+            //if nothing is hit, keep current Y or smoothly return to default height
+            currentTorsoY = Mathf.Lerp(currentTorsoY, torso.transform.position.y, Time.deltaTime * heightSmoothSpeed);
+            torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, Quaternion.identity, Time.deltaTime * 5f);
+        }
+
+        //smooth Y
+        Vector3 pos = torso.transform.position;
+        pos.y = currentTorsoY;
+        torso.transform.position = pos;
     }
 
-    // move distance pointers with torso
+    //keep distance pointers following torso
     void UpdateDistancePointers()
     {
-        // Example: maintain initial local offsets from torso
-        frontLeftDistance.position = torso.transform.TransformPoint(torso.transform.InverseTransformPoint(frontLeftDistance.position));
-        frontRightDistance.position = torso.transform.TransformPoint(torso.transform.InverseTransformPoint(frontRightDistance.position));
-        backLeftDistance.position = torso.transform.TransformPoint(torso.transform.InverseTransformPoint(backLeftDistance.position));
-        backRightDistance.position = torso.transform.TransformPoint(torso.transform.InverseTransformPoint(backRightDistance.position));
+        frontLeft.distanceRef.position = torso.transform.TransformPoint(
+            torso.transform.InverseTransformPoint(frontLeft.distanceRef.position));
+
+        frontRight.distanceRef.position = torso.transform.TransformPoint(
+            torso.transform.InverseTransformPoint(frontRight.distanceRef.position));
+
+        backLeft.distanceRef.position = torso.transform.TransformPoint(
+            torso.transform.InverseTransformPoint(backLeft.distanceRef.position));
+
+        backRight.distanceRef.position = torso.transform.TransformPoint(
+            torso.transform.InverseTransformPoint(backRight.distanceRef.position));
     }
 
-    //step legs when pointer exceeds threshold
-    void BodyDrivenLegStep()
+    // keep planted feet when not stepping
+    void MaintainPlantedFeet(ProceduralLeg leg)
     {
-        if (isStepping) return;
-
-        switch (stepIndex)
+        if (!leg.stepping)
         {
-            case 0:
-                if (Vector3.Distance(frontLeftTarget.position, frontLeftDistance.position) > legFollowThreshold)
-                    StartCoroutine(StepLeg(frontLeftTarget, frontLeftDistance));
-                break;
-            case 1:
-                if (Vector3.Distance(backLeftTarget.position, backLeftDistance.position) > legFollowThreshold)
-                    StartCoroutine(StepLeg(backLeftTarget, backLeftDistance));
-                break;
-            case 2:
-                if (Vector3.Distance(frontRightTarget.position, frontRightDistance.position) > legFollowThreshold)
-                    StartCoroutine(StepLeg(frontRightTarget, frontRightDistance));
-                break;
-            case 3:
-                if (Vector3.Distance(backRightTarget.position, backRightDistance.position) > legFollowThreshold)
-                    StartCoroutine(StepLeg(backRightTarget, backRightDistance));
-                break;
+            leg.target.position = leg.plantedPos;
         }
     }
 
-    //move leg to pointer (pointer stays with torso)
-    IEnumerator StepLeg(Transform foot, Transform distancePointer)
+    //start steps for the current diagonal pair
+
+    void TryStepPairs()
     {
+        if (isPairStepping)
+            return; 
 
-        if (foot == frontLeftTarget) flStepping = true;
-        else if (foot == frontRightTarget) frStepping = true;
-        else if (foot == backLeftTarget) blStepping = true;
-        else if (foot == backRightTarget) brStepping = true;
+        ProceduralLeg[] currentPair = stepPairs[stepPairIndex];
 
-        isStepping = true;
-
-        Vector3 startPos = foot.position;
-        Vector3 targetPos = distancePointer.position; // pointer moves with torso
-
-        float t = 0f;
-        while (t < 1f)
+        //check if any leg exceeds threshold
+        bool shouldStep = false;
+        foreach (ProceduralLeg leg in currentPair)
         {
-            t += Time.deltaTime * stepSpeed; // control speed here
-            t = Mathf.Min(t, 1f); // ensure it never exceeds 1
-
-            Vector3 flatMove = Vector3.Lerp(startPos, targetPos, Mathf.SmoothStep(0f, 1f, t));
-            float vertical = Mathf.Sin(t * Mathf.PI) * stepHeight;
-
-            foot.position = flatMove + Vector3.up * vertical;
-
-            yield return null;
+            if (Vector3.Distance(leg.target.position, leg.distanceRef.position) > legFollowThreshold)
+            {
+                shouldStep = true;
+                break;
+            }
         }
 
+        if (shouldStep)
+        {
+            //start all legs in the pair
+            foreach (ProceduralLeg leg in currentPair)
+                StartStep(leg);
 
-        // the pointer stays in its current position
-        stepIndex = (stepIndex + 1) % 4;
+            isPairStepping = true; // lock until pair finishes
+        }
+    }
 
-        if (foot == frontLeftTarget) { FL_position = targetPos; flStepping = false; }
-        else if (foot == frontRightTarget) { FR_position = targetPos; frStepping = false; }
-        else if (foot == backLeftTarget) { BL_position = targetPos; blStepping = false; }
-        else if (foot == backRightTarget) { BR_position = targetPos; brStepping = false; }
+    //initialize a leg step
 
-        isStepping = false;
+    void StartStep(ProceduralLeg leg)
+    {
+        leg.stepping = true;
+        leg.stepProgress = 0f;
+        leg.startPos = leg.target.position;
+        leg.desiredPos = leg.distanceRef.position;
+    }
+
+    //update stepping arc per frame
+    void UpdateLegStep(ProceduralLeg leg)
+    {
+        if (!leg.stepping) return;
+
+        leg.stepProgress += Time.deltaTime * stepSpeed;
+        float t = Mathf.Clamp01(leg.stepProgress);
+
+        //horizontal motion
+        Vector3 flat = Vector3.Lerp(leg.startPos, leg.desiredPos, t);
+
+        //vertical arc
+        float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
+
+        leg.target.position = flat + Vector3.up * arc;
+
+        //finish step
+        if (t >= 1f)
+        {
+            leg.stepping = false;
+            leg.plantedPos = leg.desiredPos;
+
+            //check if entire pair has finished stepping
+            bool pairDone = true;
+            foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex])
+            {
+                if (legInPair.stepping)
+                {
+                    pairDone = false;
+                    break;
+                }
+            }
+
+            if (pairDone)
+            {
+                isPairStepping = false; // unlock for next pair
+                stepPairIndex = (stepPairIndex + 1) % stepPairs.Length;
+            }
+        }
     }
 }
