@@ -1,6 +1,25 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
+public static class GenericUtils{
+
+    public static void DisableAll(ref GameObject[] gameobjects){
+        foreach(GameObject g in gameobjects)
+            g.SetActive(false);
+    }
+
+    public static void LerpToZero(ref Vector3 vector, ref float speed){
+        vector = Vector3.Lerp(vector, Vector3.zero, Time.deltaTime * speed);
+        MinimiseLerpToZero(ref vector);
+    }
+    
+    public static void MinimiseLerpToZero(ref Vector3 vector){
+        if(vector.magnitude < 0.001f)
+            vector = vector * 0f;
+    }
+
+}
+
 public static class SoundUtils{
     
     // SOUND EFFECTS //

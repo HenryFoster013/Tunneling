@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 145db9d5b91535341a353e4acc28fcf2, type: 3}
-  m_Name: Crouch_Up
+  m_Name: Sip_Beer
   m_EditorClassIdentifier: 
-  Name: Crouch_Up
-  BaseClip: {fileID: 8300000, guid: 7997613047a6d50c5b4307a882fc4ded, type: 3}
+  Name: Sip_Beer
+  BaseClip: {fileID: 8300000, guid: 16d4d425fde7245488cf958b5582b6a7, type: 3}
   ClipRange: []
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
   PitchVariation: 0.1
-  BaseVolume: 0.14
+  BaseVolume: 0.35
   VolumeVariation: 0.05
   _3D: 0
   Radius: 0
