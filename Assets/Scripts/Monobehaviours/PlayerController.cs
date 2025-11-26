@@ -52,7 +52,9 @@ public class PlayerController : MonoBehaviour{
     // Private Variables
     float x_rot, y_rot, displayed_x_rot, displayed_y_rot, head_tilt, head_height, footstep_timer;
     bool grounded_buffer, walking, sprinting, crouching, camera_delayed, footstep_buffer;
-    Vector3 target_velocity, true_velocity, ground_normal;
+    Vector3 target_velocity, true_velocity;
+
+    public Vector3 ground_normal;
 
     public bool grounded;
 
@@ -157,11 +159,15 @@ public class PlayerController : MonoBehaviour{
     }
 
     void SetGrounded(){
+        GroundNormal();
         RaycastHit hit;
-        grounded = false;
         float radius = _CharacterController.radius;
-        if (Physics.SphereCast(transform.position + (Vector3.up * radius), radius, Vector3.down, out hit, 0.15f, GroundLayer)){
-            grounded = true;
+        grounded = Physics.SphereCast(transform.position + (Vector3.up * radius), radius, Vector3.down, out hit, 0.15f, GroundLayer);
+    }
+
+    void GroundNormal(){
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + (Vector3.up * 0.2f), Vector3.down, out hit, 0.4f, GroundLayer)){
             if (Vector3.Angle(hit.normal, Vector3.up) < 45f)
                 ground_normal = hit.normal;
             else
