@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Scripting;
 using UnityEngine;
 
 public class ProceduralMovementTest : MonoBehaviour
@@ -43,7 +44,6 @@ public class ProceduralMovementTest : MonoBehaviour
     private Vector3 BL_position;
     private Vector3 BR_position;
 
-
     void Start()
     {
         currentTorsoY = torso.transform.position.y;
@@ -61,6 +61,32 @@ public class ProceduralMovementTest : MonoBehaviour
 
     }
 
+    void MaintainGrounded()
+    {
+        RaycastHit hit_FL;
+        RaycastHit hit_FR;
+        RaycastHit hit_BL;
+        RaycastHit hit_BR;
+
+        //keep the target points for each limb grounded
+        if (Physics.Raycast(frontLeftTarget.transform.position, Vector3.down, out hit_FL, 10f, groundLayer))
+        {
+            frontLeftTarget.transform.position = hit_FL.point;
+        }
+        if (Physics.Raycast(frontRightTarget.transform.position, Vector3.down, out hit_FR, 10f, groundLayer))
+        {
+            frontRightTarget.transform.position = hit_FR.point;
+        }
+        if (Physics.Raycast(backLeftTarget.transform.position, Vector3.down, out hit_BL, 10f, groundLayer))
+        {
+            backLeftTarget.transform.position = hit_BL.point;
+        }
+        if (Physics.Raycast(backRightTarget.transform.position, Vector3.down, out hit_BR, 10f, groundLayer))
+        {
+            backRightTarget.transform.position = hit_BR.point;
+        }
+    }
+
     void MaintainLegPosition(){
         frontLeftTarget.position = FL_position;
         frontRightTarget.position = FR_position;
@@ -71,9 +97,14 @@ public class ProceduralMovementTest : MonoBehaviour
     void Update()
     {
         MaintainTorsoHeight();
-        if (!isStepping){ MaintainLegPosition();}
+        if (!isStepping) { MaintainLegPosition(); }
         UpdateDistancePointers();
         BodyDrivenLegStep();
+    }
+
+    void LateUpdate()
+    {
+        MaintainGrounded();
     }
 
     //maintain torso height above ground
@@ -104,7 +135,7 @@ public class ProceduralMovementTest : MonoBehaviour
     //step legs when pointer exceeds threshold
     void BodyDrivenLegStep()
     {
-        //if (isStepping) return;
+        if (isStepping) return;
 
         switch (stepIndex)
         {
@@ -130,10 +161,13 @@ public class ProceduralMovementTest : MonoBehaviour
     //move leg to pointer (pointer stays with torso)
     IEnumerator StepLeg(Transform foot, Transform distancePointer)
     {
-         if (foot == frontLeftTarget) flStepping = true;
+
+        if (foot == frontLeftTarget) flStepping = true;
         else if (foot == frontRightTarget) frStepping = true;
         else if (foot == backLeftTarget) blStepping = true;
         else if (foot == backRightTarget) brStepping = true;
+
+        isStepping = true;
 
         Vector3 startPos = foot.position;
         Vector3 targetPos = distancePointer.position; // pointer moves with torso
@@ -156,7 +190,7 @@ public class ProceduralMovementTest : MonoBehaviour
         // the pointer stays in its current position
         stepIndex = (stepIndex + 1) % 4;
 
-         if (foot == frontLeftTarget) { FL_position = targetPos; flStepping = false; }
+        if (foot == frontLeftTarget) { FL_position = targetPos; flStepping = false; }
         else if (foot == frontRightTarget) { FR_position = targetPos; frStepping = false; }
         else if (foot == backLeftTarget) { BL_position = targetPos; blStepping = false; }
         else if (foot == backRightTarget) { BR_position = targetPos; brStepping = false; }
