@@ -19,13 +19,15 @@ public class PlayerManager : MonoBehaviour{
     [SerializeField] TMP_Text WatermarkText;
     [SerializeField] GameObject GestureMenu;
     [SerializeField] Animator InteractIcon;
+    [SerializeField] TMP_Text InteractText;
 
     const float interact_distance = 2f;
 
     bool gestures_open, right_trigger_lock;
     Seed random_seed;
     string random_tag;
-    GameObject interact_object;
+    Transform interact_buffer;
+    Interactable interact;
 
     // Start //
 
@@ -90,20 +92,49 @@ public class PlayerManager : MonoBehaviour{
 
     void WorldInteractions(){
         SearchInteracts();
-        InteractIcon.SetBool("live", interact_object != null);
+        InteractUI();
         InteractInput();
     }
 
     void SearchInteracts(){
         RaycastHit hit;
-        interact_object = null;
         if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers)){
-            if(hit.transform.tag == "Interactable")
-                interact_object = hit.transform.gameObject;
+            MarkInteract(hit.transform);
+        }
+        else{
+            interact_buffer = null;
+            interact = null;
         }
     }
 
-    void InteractInput() { }
+    void MarkInteract(Transform trans){
+        if(trans == interact_buffer) // buffering using a transform to avoid excessive getcomponent calls
+            return;
+        if(trans.tag != "Interactable")
+            return;
+        interact_buffer = trans;
+        interact = trans.GetComponent<Interactable>();
+    }
+
+    void InteractUI(){ 
+        
+        InteractIcon.SetBool("live", interact != null);
+        string inter_disp_text = "";
+
+        if(interact != null){
+            inter_disp_text = interact.InteractText();
+        }
+
+        InteractText.text = inter_disp_text;
+    }
+
+    void InteractInput(){
+        if(interact == null)
+            return;
+        if(Input.GetButtonDown("Interact")){
+            interact.Acivate();
+        }
+    }
 
     // Gestures
 
