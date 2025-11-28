@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class PlayerManager : MonoBehaviour{
     [SerializeField] TMP_Text WatermarkText;
     [SerializeField] GameObject GestureMenu;
 
-    bool gestures_open;
+    bool gestures_open, right_trigger_lock;
     Seed random_seed;
     string random_tag;
 
@@ -60,8 +61,23 @@ public class PlayerManager : MonoBehaviour{
     // Interactions
 
     void UseItem(){
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetButtonDown("Use Item"))
             _ViewModelController.UseItem();
+        RightTriggerDown(UseItem);
+    }
+
+    void RightTriggerDown(Action action){
+        float trigger = Input.GetAxisRaw("Right Trigger");
+        if(!right_trigger_lock){
+            if(trigger > 0.75f){
+                right_trigger_lock = true;
+                action();
+            }
+        }
+        else{
+            if(trigger < 0.25f)
+                right_trigger_lock = false;
+        }
     }
 
     // Gestures

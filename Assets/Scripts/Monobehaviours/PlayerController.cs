@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour{
     [SerializeField] Transform UpperHeadPivot;
     [SerializeField] Transform LowerHeadPivot;
     [SerializeField] Camera POV_Cam;
-    [SerializeField] Camera WorldOverlay;
     [SerializeField] Camera OverlayCam;
     [SerializeField] Animator CameraAnim;
     [Header(" - Modifiers - ")]
@@ -225,9 +224,7 @@ public class PlayerController : MonoBehaviour{
     void LerpValues(){
         head_tilt = Mathf.Lerp(head_tilt, GetHeadAngle(), Time.deltaTime * camera_swivel_speed);
         head_height = Mathf.Lerp(head_height, GetHeadHeight(), Time.deltaTime * head_height_speed);
-        float pov_fov = Mathf.Lerp(POV_Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
-        POV_Cam.fieldOfView = pov_fov;
-        WorldOverlay.fieldOfView = pov_fov;
+        POV_Cam.fieldOfView = Mathf.Lerp(POV_Cam.fieldOfView, GetFOV(), fov_change * Time.deltaTime);
         OverlayCam.fieldOfView = Mathf.Lerp(OverlayCam.fieldOfView, GetOverlayFOV(), fov_change * Time.deltaTime);
     }
 
