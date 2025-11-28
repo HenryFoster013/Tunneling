@@ -12,13 +12,20 @@ public class PlayerManager : MonoBehaviour{
     [Header(" - References - ")]
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] ViewModelController _ViewModelController;
+    [Header(" - Interactions - ")]
+    [SerializeField] Transform HeadPoint;
+    [SerializeField] LayerMask InteractLayers;
     [Header(" - UI - ")]
     [SerializeField] TMP_Text WatermarkText;
     [SerializeField] GameObject GestureMenu;
+    [SerializeField] Animator InteractIcon;
+
+    const float interact_distance = 2f;
 
     bool gestures_open, right_trigger_lock;
     Seed random_seed;
     string random_tag;
+    GameObject interact_object;
 
     // Start //
 
@@ -44,6 +51,7 @@ public class PlayerManager : MonoBehaviour{
         SetCursor();
         Gestures();
         UseItem();
+        WorldInteractions();
     }
 
     // UI
@@ -79,6 +87,23 @@ public class PlayerManager : MonoBehaviour{
                 right_trigger_lock = false;
         }
     }
+
+    void WorldInteractions(){
+        SearchInteracts();
+        InteractIcon.SetBool("live", interact_object != null);
+        InteractInput();
+    }
+
+    void SearchInteracts(){
+        RaycastHit hit;
+        interact_object = null;
+        if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers)){
+            if(hit.transform.tag == "Interactable")
+                interact_object = hit.transform.gameObject;
+        }
+    }
+
+    void InteractInput() { }
 
     // Gestures
 
