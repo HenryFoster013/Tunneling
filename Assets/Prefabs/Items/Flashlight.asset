@@ -10,16 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24cd4dcb3d0893bfcbca7a42a69aa4bb, type: 3}
-  m_Name: Debug 1x1 Item
+  m_Name: Flashlight
   m_EditorClassIdentifier: 
-  Name: Debug 1x1 Item
-  Description: Null
-  CanCarry: 0
-  CanEquip: 0
-  AdditionalSize: {x: 0, y: 0}
-  PovModel: {fileID: 0}
-  Model: {fileID: 0}
-  _Rigidbody: 0
-  Weight: 0
-  Bounciness: 0
+  Name: Flashlight
+  Type: FLASHLIGHT
+  PickupSound: {fileID: 0}
   CollisionSound: {fileID: 0}
+  Model: {fileID: 6404938170950622504, guid: 8135d05815d6a6262ad0536b54b27b5b, type: 3}

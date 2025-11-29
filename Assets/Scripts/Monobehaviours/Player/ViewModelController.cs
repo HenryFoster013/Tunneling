@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static SoundUtils;
 using static GenericUtils;
+using ItemUtils;
 
 public class ViewModelController : MonoBehaviour{
 
@@ -18,12 +19,8 @@ public class ViewModelController : MonoBehaviour{
     [SerializeField] GameObject G_There;
 
     [Header(" - RIGHT HAND - ")]
-    public ItemType Type;
     [SerializeField] GameObject[] AllViewmodels;
-
-    public enum ItemType{
-        None, Flashlight, Irish_Beverage
-    }
+    ItemInstance equipped_item;
 
     [Header("Flashlight")]
     [SerializeField] GameObject FlashlightViewmodel;
@@ -41,7 +38,8 @@ public class ViewModelController : MonoBehaviour{
     // Main //
 
     void Start(){
-        EquipItem(Type);
+        DisableAll(ref AllViewmodels);
+        DisableAll(ref AllGestures);
     }
 
     void Update(){
@@ -52,10 +50,6 @@ public class ViewModelController : MonoBehaviour{
         gesture_time -= Time.deltaTime;
         if(gesture_time < 0)
             DisableAll(ref AllGestures);
-    }
-
-    public void SetItem(ItemType type){
-        Type = type;
     }
 
     // Gestures //
@@ -97,27 +91,40 @@ public class ViewModelController : MonoBehaviour{
         PlaySFX("Grunt_Here", SFX_Lookup);
     }
 
-    // Search Actions //
+    // Items //
 
-    public void EquipItem(ItemType item){
-        Type = item;
+    public void EquipItem(ItemInstance item){
+        equipped_item = item;
         DisableAll(ref AllViewmodels);
-        switch(Type){
-            case ItemType.Flashlight:
+        if(item == null)
+            return;
+        switch(equipped_item.GetTypeDef()){
+            case "FLASHLIGHT":
                 DefaultFlashlight();
                 return;
-            case ItemType.Irish_Beverage:
+            case "IRISH BEVERAGE":
                 DefaultIrishBeverage();
                 return;
         }
     }
 
+    public bool DropItem(){
+        bool valid = equipped_item != null;
+        if(valid)
+            EquipItem(null);
+        return valid;
+    }
+
+    public ItemInstance EquippedItem(){return equipped_item;}
+
     public void UseItem(){
-        switch(Type){
-            case ItemType.Flashlight:
+        if(equipped_item == null)
+            return;
+        switch(equipped_item.GetTypeDef()){
+            case "FLASHLIGHT":
                 Flashlight();
                 return;
-            case ItemType.Irish_Beverage:
+            case "IRISH BEVERAGE":
                 IrishBeverage();
                 return;
         }
@@ -160,7 +167,6 @@ public class ViewModelController : MonoBehaviour{
     void DefaultIrishBeverage(){
         IrishBeverageViewmodel.SetActive(true);
         irish_beverage_drinking = false;
-        PlaySFX("Open_Beer", SFX_Lookup);
         RefreshIrishBeverage();
     }
 

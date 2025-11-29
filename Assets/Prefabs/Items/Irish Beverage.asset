@@ -10,16 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24cd4dcb3d0893bfcbca7a42a69aa4bb, type: 3}
-  m_Name: Debug 2x2 Item
+  m_Name: Irish Beverage
   m_EditorClassIdentifier: 
-  Name: Debug 2x2 Item
-  Description: Null
-  CanCarry: 0
-  CanEquip: 0
-  AdditionalSize: {x: 1, y: 1}
-  PovModel: {fileID: 0}
-  Model: {fileID: 0}
-  _Rigidbody: 0
-  Weight: 0
-  Bounciness: 0
+  Name: Irish Beverage
+  Type: IRISH BEVERAGE
+  PickupSound: {fileID: 11400000, guid: 1aaf65cdd1f340349b3643a4f44b5b01, type: 2}
   CollisionSound: {fileID: 0}
+  Model: {fileID: 6404938170950622504, guid: 8135d05815d6a6262ad0536b54b27b5b, type: 3}
