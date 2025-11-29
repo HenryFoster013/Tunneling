@@ -893,7 +893,7 @@ GameObject:
   m_Layer: 3
   m_Name: Cube
   m_TagString: Interactable
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1051,7 +1051,7 @@ GameObject:
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1103,6 +1103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Hinge: {fileID: 1738872308}
   DoorCollider: {fileID: 742572447}
+  MaxRotation: 110
 --- !u!1001 &978082322
 PrefabInstance:
   m_ObjectHideFlags: 0
