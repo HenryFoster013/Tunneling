@@ -6,12 +6,13 @@ public class DoorController : MonoBehaviour{
     
     [SerializeField] Transform Hinge;
     [SerializeField] GameObject DoorCollider;
+    [SerializeField] float MaxRotation = 110f;
     
     const float peek_rotation = 25f;
-    const float open_rotation = 110f;
     const float hinge_speed = 5f;
 
     float hinge_rot, target_rot;
+    float direction = 1f;
     bool open;
     List<Transform> players_in_peek = new List<Transform>();
     
@@ -44,9 +45,9 @@ public class DoorController : MonoBehaviour{
     void SetTarget(){
         target_rot = 0f;
         if(open)
-            target_rot = open_rotation;
+            target_rot = MaxRotation * direction;
         else if(players_in_peek.Count > 0)
-            target_rot = peek_rotation;
+            target_rot = peek_rotation * direction;
     }
 
     void LerpRotation(){
@@ -65,9 +66,20 @@ public class DoorController : MonoBehaviour{
         if(open)
             return;
         if(t.tag == "Player"){
-            if(!players_in_peek.Contains(t))
+            if(!players_in_peek.Contains(t)){
+                CheckDirection(t);
                 players_in_peek.Add(t);
+            }
         }
+    }
+
+    void CheckDirection(Transform t){
+        if(players_in_peek.Count != 0)
+            return;
+
+        direction = 1f;
+        if(Vector3.Dot(t.position - transform.position, transform.forward) < 0)
+            direction = -1f;
     }
 
     public void ExitPeek(Transform t){
