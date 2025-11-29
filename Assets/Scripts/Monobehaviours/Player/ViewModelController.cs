@@ -98,6 +98,8 @@ public class ViewModelController : MonoBehaviour{
         DisableAll(ref AllViewmodels);
         if(item == null)
             return;
+
+        HeadsUp.SetRecoil(new Vector3(0, -0.5f, 0.1f), 10f, true);
         switch(equipped_item.GetTypeDef()){
             case "FLASHLIGHT":
                 DefaultFlashlight();
