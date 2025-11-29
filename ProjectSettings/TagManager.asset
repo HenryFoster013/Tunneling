@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Render Point
+  - Interactable
   layers:
   - Default
   - TransparentFX
@@ -11,9 +13,9 @@ TagManager:
   - Ground
   - Water
   - UI
-  - Overlay
-  - 
-  - 
+  - POV Overlay
+  - World Overlay
+  - Player
   - 
   - 
   - 
