@@ -12,7 +12,10 @@ public class ToggleInteractable : Interactable{
     
     public override void Reset(){ }
     
-    public override void Acivate(){
+    public override void Activate(){
+        if(!BasePass())
+            return;
+
         PlaySFX(SFX);
         ToToggle.SetActive(!ToToggle.activeSelf);
     }

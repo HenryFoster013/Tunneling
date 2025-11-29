@@ -97,42 +97,37 @@ public class PlayerManager : MonoBehaviour{
     }
 
     void SearchInteracts(){
+        interact_buffer = null;
+        interact = null;
         RaycastHit hit;
-        if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers)){
+        if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers))
             MarkInteract(hit.transform);
-        }
-        else{
-            interact_buffer = null;
-            interact = null;
-        }
     }
 
     void MarkInteract(Transform trans){
-        if(trans == interact_buffer) // buffering using a transform to avoid excessive getcomponent calls
-            return;
+        
         if(trans.tag != "Interactable")
             return;
+        
+        // buffering using a transform to avoid excessive GetComponent calls
+        if(trans == interact_buffer)
+            return;
+        
         interact_buffer = trans;
         interact = trans.GetComponent<Interactable>();
     }
 
     void InteractUI(){ 
-        
         InteractIcon.SetBool("live", interact != null);
-        string inter_disp_text = "";
-
-        if(interact != null){
-            inter_disp_text = interact.InteractText();
-        }
-
-        InteractText.text = inter_disp_text;
+        if(interact != null)
+            InteractText.text = interact.InteractText();
     }
 
     void InteractInput(){
         if(interact == null)
             return;
         if(Input.GetButtonDown("Interact")){
-            interact.Acivate();
+            interact.Activate();
         }
     }
 
