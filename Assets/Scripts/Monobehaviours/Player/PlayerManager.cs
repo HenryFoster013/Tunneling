@@ -107,6 +107,7 @@ public class PlayerManager : MonoBehaviour{
     void SearchInteracts(){
         interact_buffer = null;
         interact = null;
+        item = null;
         RaycastHit hit;
         if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers))
             MarkInteract(hit.transform);

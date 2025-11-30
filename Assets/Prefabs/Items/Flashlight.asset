@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Flashlight
   Type: FLASHLIGHT
-  PickupSound: {fileID: 0}
+  PickupSound: {fileID: 11400000, guid: ac19248e270fcb0cf9d469051379b7ea, type: 2}
   CollisionSound: {fileID: 0}
   Model: {fileID: 6404938170950622504, guid: 8135d05815d6a6262ad0536b54b27b5b, type: 3}

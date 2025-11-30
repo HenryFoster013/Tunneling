@@ -15,5 +15,5 @@ MonoBehaviour:
   Name: Irish Beverage
   Type: IRISH BEVERAGE
   PickupSound: {fileID: 11400000, guid: 1aaf65cdd1f340349b3643a4f44b5b01, type: 2}
-  CollisionSound: {fileID: 0}
+  CollisionSound: {fileID: 11400000, guid: 4965f7193162e9ceab0f06e24c2be1bd, type: 2}
   Model: {fileID: 6404938170950622504, guid: 8135d05815d6a6262ad0536b54b27b5b, type: 3}

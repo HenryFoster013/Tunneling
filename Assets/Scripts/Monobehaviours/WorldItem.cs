@@ -28,10 +28,9 @@ public class WorldItem : MonoBehaviour{
             LoadInstance(new ItemInstance(Definition));
     }
 
-    IEnumerator SetUsableDelay(){ // Delay avoids spam throwing and grabbing
+    IEnumerator SetUsableDelay(){
         yield return new WaitForEndOfFrame();
         LoadDefinition();
-        yield return new WaitForSeconds(1);
         MarkUsable();
     }
 
