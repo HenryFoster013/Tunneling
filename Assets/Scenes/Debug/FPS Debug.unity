@@ -4134,8 +4134,8 @@ MonoBehaviour:
   stepSpeed: 5
   stepHeight: 0.6
   stepPairs:
-  - legIndices: 
-  - legIndices: 
+  - legIndices: 0000000001000000
+  - legIndices: 0200000003000000
   rayStartOffset: 2.5
 --- !u!1 &671129662517605308
 GameObject:

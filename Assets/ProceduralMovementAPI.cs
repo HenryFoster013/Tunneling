@@ -72,6 +72,7 @@ public class ProceduralMovementAPI : MonoBehaviour
     {
         currentTorsoY = torso.transform.position.y;
 
+        AutoAssignStepPair();
         //set planted positions
         foreach (ProceduralLeg leg in legs){
             leg.plantedPos = leg.target.position;
@@ -97,6 +98,21 @@ public class ProceduralMovementAPI : MonoBehaviour
         //check if step pair should move
         TryStepPairs();
         UpdateStepMotion();
+    }
+
+    //automatically assign the steppairs if none have been set.
+    void AutoAssignStepPair(){
+        if (stepPairs == null || stepPairs.Length == 0)
+        {
+            stepPairs = new LegPair[legs.Length];
+            for (int i = 0; i < legs.Length; i++)
+            {
+                stepPairs[i] = new LegPair
+                {
+                    legIndices = new int[] { i }
+                };
+            }
+        }
     }
 
     void GroundedChecker(float offset){
