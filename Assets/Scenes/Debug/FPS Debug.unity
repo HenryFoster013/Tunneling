@@ -2429,7 +2429,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671129661545757916}
   m_Layer: 0
-  m_Name: left_leg
+  m_Name: front_left_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3989,6 +3989,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671129662454648788}
   - component: {fileID: 671129662454648789}
+  - component: {fileID: 671129662454648790}
   m_Layer: 0
   m_Name: SPIDER_TEST
   m_TagString: Untagged
@@ -4019,7 +4020,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671129662454648786}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47c22e161a327de43a5b37f3329d4f64, type: 3}
   m_Name: 
@@ -4073,6 +4074,68 @@ MonoBehaviour:
   legFollowThreshold: 0.7
   stepSpeed: 5
   stepHeight: 0.6
+  rayStartOffset: 2.5
+--- !u!114 &671129662454648790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671129662454648786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1bd02e8e67e144f8e3e131aa909eee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  torso: {fileID: 671129663227041499}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  torsoHeightOffset: 2
+  heightSmoothSpeed: 10
+  legs:
+  - target: {fileID: 671129661922198922}
+    distanceRef: {fileID: 671129661381456074}
+    caster: {fileID: 671129661642189824}
+    horizontalOffset: {x: 0, y: 0, z: 0}
+    stepping: 0
+    stepProgress: 0
+    startPos: {x: 0, y: 0, z: 0}
+    desiredPos: {x: 0, y: 0, z: 0}
+    plantedPos: {x: 0, y: 0, z: 0}
+  - target: {fileID: 671129662779026179}
+    distanceRef: {fileID: 671129662409421730}
+    caster: {fileID: 671129663339758535}
+    horizontalOffset: {x: 0, y: 0, z: 0}
+    stepping: 0
+    stepProgress: 0
+    startPos: {x: 0, y: 0, z: 0}
+    desiredPos: {x: 0, y: 0, z: 0}
+    plantedPos: {x: 0, y: 0, z: 0}
+  - target: {fileID: 671129661661684509}
+    distanceRef: {fileID: 671129662922743173}
+    caster: {fileID: 671129663077960659}
+    horizontalOffset: {x: 0, y: 0, z: 0}
+    stepping: 0
+    stepProgress: 0
+    startPos: {x: 0, y: 0, z: 0}
+    desiredPos: {x: 0, y: 0, z: 0}
+    plantedPos: {x: 0, y: 0, z: 0}
+  - target: {fileID: 671129662114439886}
+    distanceRef: {fileID: 671129663325334878}
+    caster: {fileID: 671129662343555000}
+    horizontalOffset: {x: 0, y: 0, z: 0}
+    stepping: 0
+    stepProgress: 0
+    startPos: {x: 0, y: 0, z: 0}
+    desiredPos: {x: 0, y: 0, z: 0}
+    plantedPos: {x: 0, y: 0, z: 0}
+  legFollowThreshold: 1
+  stepSpeed: 5
+  stepHeight: 0.6
+  stepPairs:
+  - legIndices: 
+  - legIndices: 
   rayStartOffset: 2.5
 --- !u!1 &671129662517605308
 GameObject:
@@ -4568,7 +4631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671129663021896838}
   m_Layer: 0
-  m_Name: right leg
+  m_Name: back_right leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4664,7 +4727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 671129663182656236}
   m_Layer: 0
-  m_Name: 'right_leg back '
+  m_Name: front_right_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

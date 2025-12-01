@@ -1,7 +1,8 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
-public class ProceduralMovementTest : MonoBehaviour
+public class ProceduralMovementAPI : MonoBehaviour
 {
     [System.Serializable] //each leg has this class
     public class ProceduralLeg
@@ -38,6 +39,11 @@ public class ProceduralMovementTest : MonoBehaviour
             }
         }
     }
+    [System.Serializable]
+    public class LegPair
+    {
+        public int[] legIndices;
+    }
 
     [Header("Torso")]
     public GameObject torso;
@@ -47,10 +53,8 @@ public class ProceduralMovementTest : MonoBehaviour
     private float currentTorsoY;
 
     [Header("Legs")]
-    public ProceduralLeg frontLeft;
-    public ProceduralLeg frontRight;
-    public ProceduralLeg backLeft;
-    public ProceduralLeg backRight;
+    public ProceduralLeg[] legs;
+
 
     [Header("Step Settings")]
     public float legFollowThreshold = 0.5f;
@@ -58,7 +62,7 @@ public class ProceduralMovementTest : MonoBehaviour
     public float stepHeight = 0.3f;
     private bool isPairStepping = false;
     //step pairs for diagonal walk
-    public ProceduralLeg[][] stepPairs;
+    public LegPair[] stepPairs;
     private int stepPairIndex = 0;
 
     [Header("Grounded RayCast Settings")]
@@ -69,25 +73,17 @@ public class ProceduralMovementTest : MonoBehaviour
         currentTorsoY = torso.transform.position.y;
 
         //set planted positions
-        frontLeft.plantedPos = frontLeft.target.position;
-        frontRight.plantedPos = frontRight.target.position;
-        backLeft.plantedPos = backLeft.target.position;
-        backRight.plantedPos = backRight.target.position;
+        foreach (ProceduralLeg leg in legs){
+            leg.plantedPos = leg.target.position;
+        }
 
-        //define diagonal walk pairs
-        stepPairs = new ProceduralLeg[][]
-        {
-            new ProceduralLeg[] { frontLeft, backRight },
-            new ProceduralLeg[] { frontRight, backLeft }
-        };
     }
 
     void StoreOffsets(){
         // store horizontal offsets (might not be needed)
-        frontLeft.horizontalOffset = frontLeft.distanceRef.position - torso.transform.position;
-        frontRight.horizontalOffset = frontRight.distanceRef.position - torso.transform.position;
-        backLeft.horizontalOffset = backLeft.distanceRef.position - torso.transform.position;
-        backRight.horizontalOffset = backRight.distanceRef.position - torso.transform.position;
+        foreach (ProceduralLeg leg in legs){
+            leg.horizontalOffset = leg.distanceRef.position - torso.transform.position;
+        }
     }
 
     void Update()
@@ -106,26 +102,24 @@ public class ProceduralMovementTest : MonoBehaviour
     void GroundedChecker(float offset){
     // pass the torso's current surface normal to each leg
         Vector3 surfaceNormal = torso.transform.up; // or computed via your torso ray
-        frontLeft.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
-        frontRight.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
-        backLeft.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
-        backRight.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+
+        foreach (ProceduralLeg leg in legs){
+            leg.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
+        }
 }
 
     void KeepFeetPlanted(){
         //keep feet planted when not stepping
-        MaintainPlantedFeet(frontLeft);
-        MaintainPlantedFeet(frontRight);
-        MaintainPlantedFeet(backLeft);
-        MaintainPlantedFeet(backRight);
+        foreach (ProceduralLeg leg in legs){
+            MaintainPlantedFeet(leg);
+        }
     }
 
     void UpdateStepMotion(){
         //update stepping motion
-        UpdateLegStep(frontLeft);
-        UpdateLegStep(frontRight);
-        UpdateLegStep(backLeft);
-        UpdateLegStep(backRight);
+        foreach (ProceduralLeg leg in legs){
+            UpdateLegStep(leg);
+        }
     }
 
     void PlainRotationManager()
@@ -206,17 +200,10 @@ public class ProceduralMovementTest : MonoBehaviour
     //keep distance pointers following torso
     void UpdateDistancePointers()
     {
-        frontLeft.distanceRef.position = torso.transform.TransformPoint(
-            torso.transform.InverseTransformPoint(frontLeft.distanceRef.position));
-
-        frontRight.distanceRef.position = torso.transform.TransformPoint(
-            torso.transform.InverseTransformPoint(frontRight.distanceRef.position));
-
-        backLeft.distanceRef.position = torso.transform.TransformPoint(
-            torso.transform.InverseTransformPoint(backLeft.distanceRef.position));
-
-        backRight.distanceRef.position = torso.transform.TransformPoint(
-            torso.transform.InverseTransformPoint(backRight.distanceRef.position));
+        foreach (ProceduralLeg legIndex in legs){
+            legIndex.distanceRef.position = torso.transform.TransformPoint(
+                torso.transform.InverseTransformPoint(legIndex.distanceRef.position));
+        }
     }
 
     // keep planted feet when not stepping
@@ -235,7 +222,14 @@ public class ProceduralMovementTest : MonoBehaviour
         if (isPairStepping)
             return; 
 
-        ProceduralLeg[] currentPair = stepPairs[stepPairIndex];
+        LegPair pair = stepPairs[stepPairIndex];
+
+        ProceduralLeg[] currentPair = new ProceduralLeg[pair.legIndices.Length];
+
+        for (int i = 0; i < pair.legIndices.Length; i++)
+        {
+            currentPair[i] = legs[pair.legIndices[i]];
+        }
 
         //check if any leg exceeds threshold
         bool shouldStep = false;
@@ -292,7 +286,9 @@ public class ProceduralMovementTest : MonoBehaviour
 
             //check if entire pair has finished stepping
             bool pairDone = true;
-            foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex])
+            foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex].legIndices
+            .Select(i => legs[i])
+            .ToArray())
             {
                 if (legInPair.stepping)
                 {
