@@ -29,6 +29,10 @@ public class SpiderAutomoveTest : MonoBehaviour
         XMinus
     }
 
+    void AvoidObstacle(){
+        //TODO
+    }
+
     void Start()
     {
         movePosition = new Vector3(
@@ -36,6 +40,24 @@ public class SpiderAutomoveTest : MonoBehaviour
             spiderBody.transform.position.y,
             zCord
         );
+    }
+
+    public void ManualSetPosition(Vector3 location)
+    {
+        movePosition = new UnityEngine.Vector3(
+        location.x,
+        spiderBody.transform.position.y,
+        location.z
+    );
+    }
+
+    public bool GetChasePlayer()
+    {
+        return ChasePlayer;
+    }
+    public void SetChasePlayer(bool val)
+    {
+        ChasePlayer = val;
     }
 
     void RotateAndChase(){

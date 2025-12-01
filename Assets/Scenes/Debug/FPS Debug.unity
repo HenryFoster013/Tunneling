@@ -1120,6 +1120,14 @@ PrefabInstance:
       propertyPath: Type
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5897461097944980328, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+      propertyPath: mainCam
+      value: 
+      objectReference: {fileID: 1136754735}
+    - target: {fileID: 5897461097944980328, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+      propertyPath: SpiderTest
+      value: 
+      objectReference: {fileID: 671129661372166956}
     - target: {fileID: 5897461097944980329, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1171,6 +1179,11 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4772497925322608924, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+--- !u!20 &1136754735 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5897461096485859449, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+  m_PrefabInstance: {fileID: 978082322}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1157706573
 GameObject:
   m_ObjectHideFlags: 0
@@ -1352,6 +1365,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1315847706}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1360047007 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 328904642960578108, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+  m_PrefabInstance: {fileID: 978082322}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1542572879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2088,7 +2106,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671129661372166951}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64d6ee4d69dfd134482ef19f06192179, type: 3}
   m_Name: 
@@ -2101,13 +2119,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671129661372166951}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c44f3f128bf261f4596c6147110ad53f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spiderBody: {fileID: 671129663227041499}
-  player: {fileID: 0}
+  player: {fileID: 1360047007}
   ChasePlayer: 0
   xCord: 0
   zCord: 0
