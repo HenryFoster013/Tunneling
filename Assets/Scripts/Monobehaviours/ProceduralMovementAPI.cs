@@ -18,7 +18,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         [HideInInspector] public bool stepping = false;
         [HideInInspector] public float stepProgress = 0f;
         [HideInInspector]public float randomXOffset;
-        [HideInInspector] public float randomZOffset;
+       [HideInInspector] public float randomZOffset;
         [HideInInspector] public Vector3 startPos;
         [HideInInspector] public Vector3 desiredPos;
         [HideInInspector] public Vector3 plantedPos; //keeps foot locked when not stepping
@@ -299,8 +299,8 @@ public class ProceduralMovementAPI : MonoBehaviour
         //offset of steps
         leg.desiredPos.x += leg.randomXOffset;
         leg.desiredPos.z += leg.randomZOffset;
-        }
     }
+}
 
     //update stepping arc per frame
     void UpdateLegStep(ProceduralLeg leg)
@@ -331,6 +331,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
         else{
             //ARC
+
             //horizontal motion
             Vector3 flat = Vector3.Lerp(leg.startPos, leg.desiredPos, t);
 
@@ -338,7 +339,7 @@ public class ProceduralMovementAPI : MonoBehaviour
             float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
 
             leg.target.position = flat + Vector3.up * arc;
-            }
+        }
 
         //finish step
         if (t >= 1f)
