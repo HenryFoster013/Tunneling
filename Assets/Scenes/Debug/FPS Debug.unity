@@ -1362,12 +1362,13 @@ MonoBehaviour:
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
-  legFollowThreshold: 0.7
-  stepSpeed: 4
-  stepHeight: 0.5
+  legFollowThreshold: 0.4
+  stepSpeed: 5
+  stepHeight: 0.3
   stepPairs:
   - legIndices: 00000000
   - legIndices: 01000000
+  StepSound: {fileID: 11400000, guid: cb407380333c56c4b943c47dd60a612b, type: 2}
   rayStartOffset: 1.55
 --- !u!1 &673539238
 GameObject:
@@ -1707,6 +1708,10 @@ PrefabInstance:
       propertyPath: SpiderTest
       value: 
       objectReference: {fileID: 671129661372166956}
+    - target: {fileID: 5897461097944980328, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+      propertyPath: ZombieTest
+      value: 
+      objectReference: {fileID: 1612568668}
     - target: {fileID: 5897461097944980329, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2667,7 +2672,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1612568665}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64d6ee4d69dfd134482ef19f06192179, type: 3}
   m_Name: 
@@ -5952,6 +5957,7 @@ MonoBehaviour:
   stepPairs:
   - legIndices: 0000000001000000
   - legIndices: 0200000003000000
+  StepSound: {fileID: 11400000, guid: af04bcb6be726da489d401e98d77c80a, type: 2}
   rayStartOffset: 2.5
 --- !u!1 &671129662517605308
 GameObject:

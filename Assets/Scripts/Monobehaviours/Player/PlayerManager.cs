@@ -23,6 +23,7 @@ public class PlayerManager : MonoBehaviour{
     [SerializeField] TMP_Text InteractText;
     [Header(" - Entity/Monster API - ")]
     [SerializeField] SpiderAutomoveTest SpiderTest;
+    [SerializeField] SpiderAutomoveTest ZombieTest;
     
 
     const float interact_distance = 2f;
@@ -153,6 +154,10 @@ public class PlayerManager : MonoBehaviour{
                 {
                     SpiderTest.SetChasePlayer(false);
                 }
+                if (ZombieTest.GetChasePlayer())
+                {
+                    ZombieTest.SetChasePlayer(false);
+                }
             }
             if(Input.GetKeyDown("3")){
                 _ViewModelController.PointThere();
@@ -167,6 +172,16 @@ public class PlayerManager : MonoBehaviour{
                         SpiderTest.ManualSetPosition(hit.point);
                     }
                 }
+                if (!ZombieTest.GetChasePlayer())
+                {
+                    Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+                    RaycastHit hit;
+                    Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue); 
+                    if (Physics.Raycast(ray, out hit, 100f, InteractLayers))
+                    {
+                        ZombieTest.ManualSetPosition(hit.point);
+                    }
+                }
             }
             if(Input.GetKeyDown("4")){
                 _ViewModelController.PointHere();
@@ -174,6 +189,10 @@ public class PlayerManager : MonoBehaviour{
                 if (!SpiderTest.GetChasePlayer())
                 {
                     SpiderTest.SetChasePlayer(true);
+                }
+                if (!ZombieTest.GetChasePlayer())
+                {
+                    ZombieTest.SetChasePlayer(true);
                 }
             }
             if(gestured){

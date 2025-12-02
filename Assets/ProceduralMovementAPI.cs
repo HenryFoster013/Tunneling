@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using static SoundUtils;
 
 public class ProceduralMovementAPI : MonoBehaviour
 {
@@ -64,6 +65,8 @@ public class ProceduralMovementAPI : MonoBehaviour
     //step pairs for diagonal walk
     public LegPair[] stepPairs;
     private int stepPairIndex = 0;
+
+    [SerializeField] SoundEffect StepSound;
 
     [Header("Grounded RayCast Settings")]
     public float rayStartOffset;
@@ -316,6 +319,7 @@ public class ProceduralMovementAPI : MonoBehaviour
             if (pairDone)
             {
                 isPairStepping = false; // unlock for next pair
+                PlaySFX(StepSound, leg.plantedPos);
                 stepPairIndex = (stepPairIndex + 1) % stepPairs.Length;
             }
         }
