@@ -2687,7 +2687,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234505996463827048}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.54600143, y: -2.0810003, z: 0.046455383}
+  m_LocalPosition: {x: 1.007, y: -2.442, z: 0.907}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3339,7 +3339,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  torsoHeightOffset: 1.55
+  torsoHeightOffset: 1.4
   heightSmoothSpeed: 10
   legs:
   - target: {fileID: 234505997642577604}
@@ -3372,7 +3372,7 @@ MonoBehaviour:
     customStepPhase: 0
     customPhaseProgress: 0
     customDesiredPos: {x: 0, y: 0, z: 0}
-  legFollowThreshold: 0.4
+  legFollowThreshold: 0.3
   stepSpeed: 5
   stepHeight: 0.3
   stepPairs:
@@ -3380,6 +3380,7 @@ MonoBehaviour:
   - legIndices: 01000000
   offsetRange: 0.1
   StepSound: {fileID: 11400000, guid: cb407380333c56c4b943c47dd60a612b, type: 2}
+  Bobbing: 0
   rayStartOffset: 1.55
 --- !u!1 &234505997371036689
 GameObject:
@@ -3492,7 +3493,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234505997564800362}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.48418617, y: -2.081, z: 0.010002136}
+  m_LocalPosition: {x: -0.739, y: -2.4420002, z: 0.87054825}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5638,6 +5639,7 @@ MonoBehaviour:
   - legIndices: 0200000003000000
   offsetRange: 0.1
   StepSound: {fileID: 11400000, guid: af04bcb6be726da489d401e98d77c80a, type: 2}
+  Bobbing: 1
   rayStartOffset: 2.5
 --- !u!1 &725489834826338672
 GameObject:

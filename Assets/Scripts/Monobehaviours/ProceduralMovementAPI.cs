@@ -58,6 +58,7 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     [Header("Torso")]
     public GameObject torso;
+    private float torsoDefaultHeight;
     public LayerMask groundLayer;
     public float torsoHeightOffset = 0f;
     public float heightSmoothSpeed = 5f;
@@ -79,11 +80,19 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     [SerializeField] SoundEffect StepSound;
 
+    public bool Bobbing;
+    private float bobOffset = 0f;
+    private float bobTimer;
+    private float bobDuration = 0.5f;
+    private bool isBobbing = false;
+
     [Header("Grounded RayCast Settings")]
     public float rayStartOffset;
 
     void Start()
     {
+        torsoDefaultHeight = torsoHeightOffset;
+
         currentTorsoY = torso.transform.position.y;
 
         AutoAssignStepPair();
@@ -92,6 +101,29 @@ public class ProceduralMovementAPI : MonoBehaviour
             leg.plantedPos = leg.target.position;
         }
 
+    }
+
+    void StartBob()
+    {
+        if (!isBobbing)
+        {
+            bobOffset = Random.Range(0.1f, 0.15f); // pick once
+            isBobbing = true;
+            bobTimer = 0f;
+        }
+    }
+
+    void BobManager()
+    {
+        if (!isBobbing) return;
+
+        bobTimer += Time.deltaTime;
+
+        if (bobTimer >= bobDuration)
+        {
+            bobOffset = 0f;
+            isBobbing = false;
+        }
     }
 
     void StoreOffsets(){
@@ -108,6 +140,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         GroundedChecker(rayStartOffset);
         KeepFeetPlanted();
         PlainRotationManager();
+        BobManager();
 
         //check if step pair should move
         TryStepPairs();
@@ -204,9 +237,9 @@ public class ProceduralMovementAPI : MonoBehaviour
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, rayLength, groundLayer))
         {
             Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.red);
-
+            
             //smoothly move torso Y to ground height + offset
-            float targetY = hit.point.y + torsoHeightOffset;
+            float targetY = hit.point.y + torsoHeightOffset - bobOffset;
             currentTorsoY = Mathf.Lerp(currentTorsoY, targetY, Time.deltaTime * heightSmoothSpeed);
 
             //optional: Align rotation to surface normal for slopes
@@ -292,7 +325,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         leg.stepping = true;
         leg.stepProgress = 0f;
         leg.startPos = leg.target.position;
-        
+
         if (leg.customStepTarget != null)
         {
             // PHASE 0 target
@@ -312,6 +345,10 @@ public class ProceduralMovementAPI : MonoBehaviour
             leg.desiredPos = leg.distanceRef.position;
             leg.desiredPos.x += leg.randomXOffset;
             leg.desiredPos.z += leg.randomZOffset;
+        }
+
+        if (Bobbing){
+            StartBob();
         }
 }
 
