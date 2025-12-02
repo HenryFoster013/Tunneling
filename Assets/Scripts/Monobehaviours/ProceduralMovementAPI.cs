@@ -19,9 +19,14 @@ public class ProceduralMovementAPI : MonoBehaviour
         [HideInInspector] public float stepProgress = 0f;
         [HideInInspector]public float randomXOffset;
        [HideInInspector] public float randomZOffset;
+
         [HideInInspector] public Vector3 startPos;
         [HideInInspector] public Vector3 desiredPos;
         [HideInInspector] public Vector3 plantedPos; //keeps foot locked when not stepping
+
+        [HideInInspector] public int customStepPhase = 0; // 0 = to custom target, 1 = to distanceRef
+        [HideInInspector] public float customPhaseProgress = 0f;
+        [HideInInspector] public Vector3 customDesiredPos;
 
         public void UpdateGroundPosition(LayerMask groundLayer, float rayStartOffset, float maxDistance = 10f, Vector3 surfaceNormal = default)
         {
@@ -39,6 +44,8 @@ public class ProceduralMovementAPI : MonoBehaviour
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, Mathf.Infinity, groundLayer))
             {
                 desiredPos = hit.point;
+                desiredPos.x += randomXOffset;
+                desiredPos.z += randomZOffset;
                 distanceRef.position = desiredPos;
             }
         }
@@ -285,21 +292,27 @@ public class ProceduralMovementAPI : MonoBehaviour
         leg.stepping = true;
         leg.stepProgress = 0f;
         leg.startPos = leg.target.position;
+        
         if (leg.customStepTarget != null)
-    {
-        //bending step mode
-        Vector3 customPos = leg.customStepTarget.position;
-        leg.desiredPos = new Vector3(customPos.x + leg.randomXOffset, customPos.y, customPos.z + leg.randomZOffset);
-    }
-    else
-    {
-        //normal arc step
-        leg.desiredPos = leg.distanceRef.position;
-        //Debug.Log(leg.desiredPos);
-        //offset of steps
-        leg.desiredPos.x += leg.randomXOffset;
-        leg.desiredPos.z += leg.randomZOffset;
-    }
+        {
+            // PHASE 0 target
+            Vector3 customPos = leg.customStepTarget.position;
+            leg.customDesiredPos = new Vector3(
+                customPos.x + leg.randomXOffset,
+                customPos.y,
+                customPos.z + leg.randomZOffset
+            );
+
+            leg.customStepPhase = 0;
+            leg.customPhaseProgress = 0f;
+        }
+        else
+        {
+            //normal step
+            leg.desiredPos = leg.distanceRef.position;
+            leg.desiredPos.x += leg.randomXOffset;
+            leg.desiredPos.z += leg.randomZOffset;
+        }
 }
 
     //update stepping arc per frame
@@ -307,30 +320,60 @@ public class ProceduralMovementAPI : MonoBehaviour
     {
         if (!leg.stepping) return;
 
-        //Debug.Log(leg.desiredPos);
-
-        leg.stepProgress += Time.deltaTime * stepSpeed;
-        float t = Mathf.Clamp01(leg.stepProgress);
-        
-        //bending step
         if (leg.customStepTarget != null)
         {
-            //horizontal lerp to custom target
-            Vector3 horizontal = Vector3.Lerp(
-                new Vector3(leg.startPos.x, 0, leg.startPos.z),
-                new Vector3(leg.desiredPos.x, 0, leg.desiredPos.z),
-                t
-            );
+            //determine start and end for the current phase
+            Vector3 start, end;
 
-            //vertical motion:
-            float arc = Mathf.Sin(t * Mathf.PI) * stepHeight * 0.5f; // smaller than normal arc
-            float targetY = leg.distanceRef.position.y;
-            float newY = Mathf.Lerp(leg.startPos.y, targetY, t) + arc;
+            if (leg.customStepPhase == 0)
+            {
+                start = leg.startPos;
+                end = leg.customStepTarget.position + new Vector3(leg.randomXOffset, 0, leg.randomZOffset);
+            }
+            else
+            {
+                start = leg.customStepTarget.position + new Vector3(leg.randomXOffset, 0, leg.randomZOffset);
+                end = leg.distanceRef.position + new Vector3(leg.randomXOffset, 0, leg.randomZOffset);
+            }
 
-            leg.target.position = new Vector3(horizontal.x, newY, horizontal.z);
+            //advance phase progress
+            leg.customPhaseProgress += Time.deltaTime * stepSpeed;
+            float t = Mathf.Clamp01(leg.customPhaseProgress);
+
+            //horizontal lerp
+            Vector3 horizontal = Vector3.Lerp(new Vector3(start.x, 0, start.z), new Vector3(end.x, 0, end.z), t);
+
+            //vertical arc
+            float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
+            float y = Mathf.Lerp(start.y, end.y, t) + arc;
+
+            leg.target.position = new Vector3(horizontal.x, y, horizontal.z);
+
+            //check if phase is complete
+            if (t >= 1f)
+            {
+                leg.customPhaseProgress = 0f; // reset for next phase
+                leg.customStepPhase++;
+
+                //both phases finished?
+                if (leg.customStepPhase > 1)
+                {
+                    leg.stepping = false;
+                    leg.plantedPos = end;
+                    FinishStepPair(leg);
+                }
+            }
+
+            return;
         }
         else{
-            //ARC
+
+            // NORMAL ONE-PHASE STEP
+
+            //Debug.Log(leg.desiredPos);
+
+            leg.stepProgress += Time.deltaTime * stepSpeed;
+            float t = Mathf.Clamp01(leg.stepProgress);
 
             //horizontal motion
             Vector3 flat = Vector3.Lerp(leg.startPos, leg.desiredPos, t);
@@ -339,33 +382,56 @@ public class ProceduralMovementAPI : MonoBehaviour
             float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
 
             leg.target.position = flat + Vector3.up * arc;
-        }
 
-        //finish step
-        if (t >= 1f)
-        {
-            leg.stepping = false;
-            leg.plantedPos = leg.desiredPos;
 
-            //check if entire pair has finished stepping
-            bool pairDone = true;
-            foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex].legIndices
-            .Select(i => legs[i])
-            .ToArray())
+            //finish step
+            if (t >= 1f)
             {
-                if (legInPair.stepping)
+                leg.stepping = false;
+                leg.plantedPos = leg.desiredPos;
+
+                //check if entire pair has finished stepping
+                bool pairDone = true;
+                foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex].legIndices
+                .Select(i => legs[i])
+                .ToArray())
                 {
-                    pairDone = false;
-                    break;
+                    if (legInPair.stepping)
+                    {
+                        pairDone = false;
+                        break;
+                    }
+                }
+
+                if (pairDone)
+                {
+                    isPairStepping = false; // unlock for next pair
+                    PlaySFX(StepSound, leg.plantedPos);
+                    stepPairIndex = (stepPairIndex + 1) % stepPairs.Length;
                 }
             }
+        }
+    }
 
-            if (pairDone)
+    void FinishStepPair(ProceduralLeg leg)
+    {
+        bool pairDone = true;
+
+        foreach (ProceduralLeg legInPair in stepPairs[stepPairIndex]
+            .legIndices.Select(i => legs[i]))
+        {
+            if (legInPair.stepping)
             {
-                isPairStepping = false; // unlock for next pair
-                PlaySFX(StepSound, leg.plantedPos);
-                stepPairIndex = (stepPairIndex + 1) % stepPairs.Length;
+                pairDone = false;
+                break;
             }
+        }
+
+        if (pairDone)
+        {
+            isPairStepping = false;
+            PlaySFX(StepSound, leg.plantedPos);
+            stepPairIndex = (stepPairIndex + 1) % stepPairs.Length;
         }
     }
 }

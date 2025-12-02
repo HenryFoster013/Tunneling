@@ -60,7 +60,8 @@ public class SpiderAutomoveTest : MonoBehaviour
         ChasePlayer = val;
     }
 
-    void RotateAndChase(){
+    void RotateAndChase()
+    {
         if (ChasePlayer)
         {
             movePosition = new Vector3(
@@ -70,9 +71,10 @@ public class SpiderAutomoveTest : MonoBehaviour
             );
         }
 
-        // direction from spider to target including Y (slope following)
         Vector3 direction = movePosition - spiderBody.transform.position;
-        if (direction.sqrMagnitude < 0.001f) return;
+        float distance = direction.magnitude;
+        
+        if (distance < 0.01f) return; // <-- stop if almost at target
 
         // apply front offset
         Quaternion offset = Quaternion.identity;
@@ -93,14 +95,12 @@ public class SpiderAutomoveTest : MonoBehaviour
         if (flatDir.sqrMagnitude > 0.001f)
         {
             Quaternion horizontalRotation = Quaternion.LookRotation(flatDir, Vector3.up);
-            
-            // smoothly rotate Y toward target while keeping X/Z tilt for slopes
             Vector3 slopeEuler = slopeRotation.eulerAngles;
             Vector3 horizontalEuler = horizontalRotation.eulerAngles;
             Vector3 finalEuler = new Vector3(
-                slopeEuler.x,       // tilt along slope
-                horizontalEuler.y,  // face target horizontally
-                slopeEuler.z        // tilt along slope
+                slopeEuler.x,
+                horizontalEuler.y,
+                slopeEuler.z
             );
 
             spiderBody.transform.rotation = Quaternion.RotateTowards(
@@ -110,12 +110,15 @@ public class SpiderAutomoveTest : MonoBehaviour
             );
         }
 
-        // move toward target
-        spiderBody.transform.position = Vector3.MoveTowards(
-            spiderBody.transform.position,
-            movePosition,
-            speedFactor * Time.deltaTime
-        );
+        // move toward target only if distance above threshold
+        if (distance > 0.01f)
+        {
+            spiderBody.transform.position = Vector3.MoveTowards(
+                spiderBody.transform.position,
+                movePosition,
+                speedFactor * Time.deltaTime
+            );
+        }
     }
 
     void Update()

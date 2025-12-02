@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Render Point
   - Interactable
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - POV Overlay
   - World Overlay
   - Player
-  - 
+  - Items
   - 
   - 
   - 

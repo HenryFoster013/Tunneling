@@ -7,34 +7,17 @@ public class ItemDefinition : ScriptableObject
 {
     [Header(" - Main - ")]
     [SerializeField] string Name;
-    [SerializeField] string Description;
-
-    [Header(" - Inventory - ")]
-    [SerializeField] bool CanCarry;
-    [SerializeField] bool CanEquip;
-    [SerializeField] Vector2Int AdditionalSize;
-
-    [Header(" - 2D - ")]
-    [SerializeField] GameObject PovModel;
-
-    [Header(" - 3D - ")]
-    [SerializeField] GameObject Model;
-    [SerializeField] bool _Rigidbody;
-    [SerializeField] float Weight;
-    [SerializeField] float Bounciness;
+    [SerializeField] string Type;
+    [Header(" - Extras - ")]
+    [SerializeField] SoundEffect PickupSound;
     [SerializeField] SoundEffect CollisionSound;
+    [SerializeField] GameObject Model;
 
     // Getters //
 
     public string GetName(){return Name;}
-    public string GetDescription(){return Description;}
-    public bool Carriable(){return CanCarry;}
-    public bool Equipable(){return CanEquip;}
-    public GameObject GetPovModel(){return PovModel;}
-    public GameObject GetModel(){return Model;}
-    public bool IsRigidbody(){return _Rigidbody;}
-    public float GetWeight(){return Weight;}
-    public float GetBounciness(){return Bounciness;}
+    public string GetTypeDef(){return Type.ToUpper();}
+    public GameObject GetPrefab(){return Model;}
+    public SoundEffect GetPickupSound(){return PickupSound;}
     public SoundEffect GetCollisionSound(){return CollisionSound;}
-    public Vector2Int GetAdditionalSize(){return AdditionalSize;}
 }

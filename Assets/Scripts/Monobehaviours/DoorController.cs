@@ -1,13 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static SoundUtils;
 
 public class DoorController : MonoBehaviour{
     
+    [Header(" - Main - ")]
     [SerializeField] Transform Hinge;
     [SerializeField] GameObject DoorCollider;
     [SerializeField] float MaxRotation = 110f;
-    
+    [Header(" - SFX - ")]
+    [SerializeField] SoundEffect PeekSFX;
+    [SerializeField] SoundEffect OpenSFX;
+    [SerializeField] SoundEffect CloseSFX;
+     
     const float peek_rotation = 25f;
     const float hinge_speed = 5f;
 
@@ -66,6 +72,8 @@ public class DoorController : MonoBehaviour{
         if(open)
             return;
         if(t.tag == "Player"){
+            if(players_in_peek.Count == 0)
+                PlaySFX(PeekSFX, transform.position);
             if(!players_in_peek.Contains(t)){
                 CheckDirection(t);
                 players_in_peek.Add(t);
@@ -88,11 +96,15 @@ public class DoorController : MonoBehaviour{
         if(t.tag == "Player"){
             if(players_in_peek.Contains(t))
                 players_in_peek.Remove(t);
+            if(players_in_peek.Count == 0)
+                PlaySFX(CloseSFX, transform.position);
         }
     }
 
     public void EnterOpen(Transform t){
-        if(t.tag == "Player")
+        if(t.tag == "Player"){
             open = true;
+            PlaySFX(OpenSFX, transform.position);
+        }
     }
 }
