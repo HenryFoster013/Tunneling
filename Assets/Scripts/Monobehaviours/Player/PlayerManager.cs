@@ -42,7 +42,7 @@ public class PlayerManager : MonoBehaviour{
 
     void InitialRandomness(){
         random_seed = new Seed();
-        random_tag = random_seed.RandomString(8);
+        random_tag = random_seed.RandomString(9);
     }
 
     void DefaultValues(){
@@ -66,7 +66,7 @@ public class PlayerManager : MonoBehaviour{
     
     void SetWatermark(){
         string timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string fluff = " -0100\nAPOLLYGON BODY 2 ";
+        string fluff = " -0100\nAPOLLYON BODY 2 ";
         WatermarkText.text = timestamp + fluff + random_tag;
     }
     

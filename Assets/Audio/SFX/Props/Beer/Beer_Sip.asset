@@ -10,19 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 145db9d5b91535341a353e4acc28fcf2, type: 3}
-  m_Name: Aluminium Can
+  m_Name: Beer_Sip
   m_EditorClassIdentifier: 
-  Name: Can
-  BaseClip: {fileID: 0}
-  ClipRange:
-  - {fileID: 8300000, guid: f893d861535109771816997f52b65e71, type: 3}
-  - {fileID: 8300000, guid: 7196bd86480e51f9e8f0cb3af94ec3f9, type: 3}
-  - {fileID: 8300000, guid: eb5bc1c29716d3c1f8ddebf5b72ded72, type: 3}
-  - {fileID: 8300000, guid: b7226aeef70a76919b05890bb9104016, type: 3}
+  Name: Beer_Sip
+  BaseClip: {fileID: 8300000, guid: 16d4d425fde7245488cf958b5582b6a7, type: 3}
+  ClipRange: []
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
-  PitchVariation: 0.25
-  BaseVolume: 0.6
-  VolumeVariation: 0.1
-  _3D: 1
-  Radius: 15
+  PitchVariation: 0.1
+  BaseVolume: 0.35
+  VolumeVariation: 0.05
+  _3D: 0
+  Radius: 0

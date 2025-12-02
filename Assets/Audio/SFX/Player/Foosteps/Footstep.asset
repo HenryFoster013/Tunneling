@@ -15,8 +15,6 @@ MonoBehaviour:
   Name: Footstep
   BaseClip: {fileID: 0}
   ClipRange:
-  - {fileID: 8300000, guid: 82f0b38f020d7c94e89abb64ecc8584e, type: 3}
-  - {fileID: 8300000, guid: 619133ec36d2b3d49ae17bc828ae7a72, type: 3}
   - {fileID: 8300000, guid: c4a0ae53e56305846bbce3764e5e4484, type: 3}
   - {fileID: 8300000, guid: 56424b20ebf51f047867456528a8219b, type: 3}
   - {fileID: 8300000, guid: 03086d5902372b04a8f2328a951ddd9c, type: 3}
@@ -25,6 +23,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 482f194e7673e9c4abd66756828c56ac, type: 3}
   - {fileID: 8300000, guid: f20b69068e347c74aab0d3d1d17d894f, type: 3}
   - {fileID: 8300000, guid: 069dc59d81850f14aabc66fb11b744d3, type: 3}
+  - {fileID: 8300000, guid: 82f0b38f020d7c94e89abb64ecc8584e, type: 3}
+  - {fileID: 8300000, guid: 619133ec36d2b3d49ae17bc828ae7a72, type: 3}
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1.1
   PitchVariation: 0.1
