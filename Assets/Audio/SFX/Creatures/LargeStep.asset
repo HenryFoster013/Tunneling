@@ -17,8 +17,8 @@ MonoBehaviour:
   ClipRange: []
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
-  PitchVariation: 0.2
-  BaseVolume: 0.7
+  PitchVariation: 0.1
+  BaseVolume: 0.3
   VolumeVariation: 0.2
   _3D: 1
   Radius: 30

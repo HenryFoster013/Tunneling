@@ -1346,19 +1346,25 @@ MonoBehaviour:
   legs:
   - target: {fileID: 978790708}
     distanceRef: {fileID: 893592041}
+    customStepTarget: {fileID: 1072984731}
     caster: {fileID: 1421111757}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
   - target: {fileID: 1779432170}
     distanceRef: {fileID: 435893998}
+    customStepTarget: {fileID: 2106914713}
     caster: {fileID: 1486943848}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
@@ -1368,6 +1374,7 @@ MonoBehaviour:
   stepPairs:
   - legIndices: 00000000
   - legIndices: 01000000
+  offsetRange: 0.3
   StepSound: {fileID: 11400000, guid: cb407380333c56c4b943c47dd60a612b, type: 2}
   rayStartOffset: 1.55
 --- !u!1 &673539238
@@ -1834,6 +1841,8 @@ Transform:
   - {fileID: 435893998}
   - {fileID: 1421111757}
   - {fileID: 1486943848}
+  - {fileID: 1072984731}
+  - {fileID: 2106914713}
   m_Father: {fileID: 638668987}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1937,6 +1946,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1072984730
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1072984731}
+  m_Layer: 0
+  m_Name: left_leg_move_to
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1072984731
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072984730}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.48418617, y: -1.2310004, z: 0.010002136}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 983471601}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1097813579
 GameObject:
   m_ObjectHideFlags: 0
@@ -3602,6 +3642,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012801174}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2106914712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2106914713}
+  m_Layer: 0
+  m_Name: right_leg_move_to
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2106914713
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106914712}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0.54600143, y: -1.231, z: 0.046455383}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 983471601}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &2116305266
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,37 +5988,49 @@ MonoBehaviour:
   legs:
   - target: {fileID: 671129661922198922}
     distanceRef: {fileID: 671129661381456074}
+    customStepTarget: {fileID: 0}
     caster: {fileID: 671129661642189824}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
   - target: {fileID: 671129662779026179}
     distanceRef: {fileID: 671129662409421730}
+    customStepTarget: {fileID: 0}
     caster: {fileID: 671129663339758535}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
   - target: {fileID: 671129661661684509}
     distanceRef: {fileID: 671129662922743173}
+    customStepTarget: {fileID: 0}
     caster: {fileID: 671129663077960659}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
   - target: {fileID: 671129662114439886}
     distanceRef: {fileID: 671129663325334878}
+    customStepTarget: {fileID: 0}
     caster: {fileID: 671129662343555000}
     horizontalOffset: {x: 0, y: 0, z: 0}
     stepping: 0
     stepProgress: 0
+    randomXOffset: 0
+    randomZOffset: 0
     startPos: {x: 0, y: 0, z: 0}
     desiredPos: {x: 0, y: 0, z: 0}
     plantedPos: {x: 0, y: 0, z: 0}
@@ -5957,6 +6040,7 @@ MonoBehaviour:
   stepPairs:
   - legIndices: 0000000001000000
   - legIndices: 0200000003000000
+  offsetRange: 0.5
   StepSound: {fileID: 11400000, guid: af04bcb6be726da489d401e98d77c80a, type: 2}
   rayStartOffset: 2.5
 --- !u!1 &671129662517605308
