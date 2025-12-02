@@ -9,12 +9,15 @@ public class ProceduralMovementAPI : MonoBehaviour
     {
         public Transform target;      
         public Transform distanceRef; 
+        public Transform customStepTarget;
         public Transform caster;
 
         [HideInInspector] public Vector3 horizontalOffset;
 
         [HideInInspector] public bool stepping = false;
         [HideInInspector] public float stepProgress = 0f;
+        [HideInInspector]public float randomXOffset;
+       [HideInInspector] public float randomZOffset;
         [HideInInspector] public Vector3 startPos;
         [HideInInspector] public Vector3 desiredPos;
         [HideInInspector] public Vector3 plantedPos; //keeps foot locked when not stepping
@@ -64,6 +67,7 @@ public class ProceduralMovementAPI : MonoBehaviour
     //step pairs for diagonal walk
     public LegPair[] stepPairs;
     private int stepPairIndex = 0;
+    public float offsetRange;
 
     [Header("Grounded RayCast Settings")]
     public float rayStartOffset;
@@ -272,27 +276,67 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     void StartStep(ProceduralLeg leg)
     {
+        leg.randomXOffset = Random.Range (-offsetRange,offsetRange);
+        leg.randomZOffset = Random.Range(-offsetRange,offsetRange);
+
         leg.stepping = true;
         leg.stepProgress = 0f;
         leg.startPos = leg.target.position;
-        leg.desiredPos = leg.distanceRef.position;
+        if (leg.customStepTarget != null)
+    {
+        //bending step mode
+        Vector3 customPos = leg.customStepTarget.position;
+        leg.desiredPos = new Vector3(customPos.x + leg.randomXOffset, customPos.y, customPos.z + leg.randomZOffset);
     }
+    else
+    {
+        //normal arc step
+        leg.desiredPos = leg.distanceRef.position;
+        //Debug.Log(leg.desiredPos);
+        //offset of steps
+        leg.desiredPos.x += leg.randomXOffset;
+        leg.desiredPos.z += leg.randomZOffset;
+    }
+}
 
     //update stepping arc per frame
     void UpdateLegStep(ProceduralLeg leg)
     {
         if (!leg.stepping) return;
 
+        //Debug.Log(leg.desiredPos);
+
         leg.stepProgress += Time.deltaTime * stepSpeed;
         float t = Mathf.Clamp01(leg.stepProgress);
+        
+        //bending step
+        if (leg.customStepTarget != null)
+        {
+            //horizontal lerp to custom target
+            Vector3 horizontal = Vector3.Lerp(
+                new Vector3(leg.startPos.x, 0, leg.startPos.z),
+                new Vector3(leg.desiredPos.x, 0, leg.desiredPos.z),
+                t
+            );
 
-        //horizontal motion
-        Vector3 flat = Vector3.Lerp(leg.startPos, leg.desiredPos, t);
+            //vertical motion:
+            float arc = Mathf.Sin(t * Mathf.PI) * stepHeight * 0.5f; // smaller than normal arc
+            float targetY = leg.distanceRef.position.y;
+            float newY = Mathf.Lerp(leg.startPos.y, targetY, t) + arc;
 
-        //vertical arc
-        float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
+            leg.target.position = new Vector3(horizontal.x, newY, horizontal.z);
+        }
+        else{
+            //ARC
 
-        leg.target.position = flat + Vector3.up * arc;
+            //horizontal motion
+            Vector3 flat = Vector3.Lerp(leg.startPos, leg.desiredPos, t);
+
+            //vertical arc
+            float arc = Mathf.Sin(t * Mathf.PI) * stepHeight;
+
+            leg.target.position = flat + Vector3.up * arc;
+        }
 
         //finish step
         if (t >= 1f)
