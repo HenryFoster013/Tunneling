@@ -18,7 +18,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         [HideInInspector] public bool stepping = false;
         [HideInInspector] public float stepProgress = 0f;
         [HideInInspector]public float randomXOffset;
-       [HideInInspector] public float randomZOffset;
+        [HideInInspector] public float randomZOffset;
 
         [HideInInspector] public Vector3 startPos;
         [HideInInspector] public Vector3 desiredPos;
@@ -80,14 +80,28 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     [SerializeField] SoundEffect StepSound;
 
+    [Header("Bobbing")]
     public bool Bobbing;
     private float bobOffset = 0f;
     private float bobTimer;
     private float bobDuration = 0.5f;
     private bool isBobbing = false;
 
+    [Header("Climbing")]
+    public bool CanClimb;
+    private bool isClimbing;
+    public SphereCollider climbField;
+    private Orientation CurrentPlane = Orientation.Normal;
+
+
     [Header("Grounded RayCast Settings")]
     public float rayStartOffset;
+
+    public enum Orientation{
+        Normal, //default
+        UpsideDown, //180 degrees
+        Sideways //90 degrees
+    }
 
     void Start()
     {
@@ -126,6 +140,59 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
     }
 
+    void climbingManager()
+    {
+        if (!CanClimb) return;
+
+        Collider[] hits = Physics.OverlapSphere(climbField.transform.position, climbField.radius);
+        bool onClimbable = false;
+
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Climbable"))
+            {
+                //Debug.Log("Hit a climbable wall");
+                onClimbable = true;
+
+                // get closest point on surface to spider
+                Vector3 closestPoint = hit.ClosestPoint(torso.transform.position);
+
+                // surface normal pointing away from the wall
+                Vector3 normal = (torso.transform.position - closestPoint).normalized;
+
+                // decide orientation
+                float dotUp = Vector3.Dot(normal, Vector3.up);
+                if (dotUp > 0.7f)
+                    CurrentPlane = Orientation.Normal;
+                else if (dotUp < -0.7f)
+                    CurrentPlane = Orientation.UpsideDown;
+                else
+                    CurrentPlane = Orientation.Sideways;
+
+                ApplyClimbRotation(normal);
+
+                break;
+            }
+        }
+
+        isClimbing = onClimbable;
+
+        if (!onClimbable)
+        {
+            CurrentPlane = Orientation.Normal;
+            ApplyClimbRotation(Vector3.up);
+        }
+    }
+
+    void ApplyClimbRotation(Vector3 surfaceNormal)
+    {
+        // forward projected onto the plane perpendicular to the surface
+        Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, surfaceNormal).normalized;
+
+        // instantly set rotation
+        torso.transform.rotation = Quaternion.LookRotation(forward, surfaceNormal);
+    }
+
     void StoreOffsets(){
         // store horizontal offsets (might not be needed)
         foreach (ProceduralLeg leg in legs){
@@ -141,6 +208,8 @@ public class ProceduralMovementAPI : MonoBehaviour
         KeepFeetPlanted();
         PlainRotationManager();
         BobManager();
+
+        climbingManager();
 
         //check if step pair should move
         TryStepPairs();
@@ -229,35 +298,38 @@ public class ProceduralMovementAPI : MonoBehaviour
     // torso height/rotation maintainer
     void MaintainTorsoHeightAndRotation()
     {
-        //cast a long ray straight down from above the spider
-        Vector3 rayOrigin = torso.transform.position + Vector3.up * 1f;
-        Vector3 rayDirection = Vector3.down;
-        float rayLength = 50f;
+
+        // cast the ray along the torso's local "down"
+        Vector3 rayOrigin = torso.transform.position + torso.transform.up * 1f; // slightly above torso
+        Vector3 rayDirection = -torso.transform.up; // local down
+        float rayLength = 50f; // allow for walls and ceilings
 
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, rayLength, groundLayer))
         {
             Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.red);
-            
-            //smoothly move torso Y to ground height + offset
-            float targetY = hit.point.y + torsoHeightOffset - bobOffset;
-            currentTorsoY = Mathf.Lerp(currentTorsoY, targetY, Time.deltaTime * heightSmoothSpeed);
 
-            //optional: Align rotation to surface normal for slopes
+            if (CurrentPlane == Orientation.Normal){
+                // smoothly move torso along local down direction
+                float targetHeight = hit.point.y + torsoHeightOffset - bobOffset;
+
+                //project torso position along torso.up to hit point for non-flat surfaces
+                Vector3 desiredPos = hit.point + torso.transform.up * torsoHeightOffset - torso.transform.up * bobOffset;
+
+                // smooth the position
+                torso.transform.position = Vector3.Lerp(torso.transform.position, desiredPos, Time.deltaTime * heightSmoothSpeed);
+                }
+
+            //align torso rotation to surface
             Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, hit.normal).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(forward, hit.normal);
             torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
         else
         {
-            //if nothing is hit, keep current Y or smoothly return to default height
-            currentTorsoY = Mathf.Lerp(currentTorsoY, torso.transform.position.y, Time.deltaTime * heightSmoothSpeed);
+            // if nothing hit, keep current position or return to default
+            torso.transform.position = Vector3.Lerp(torso.transform.position, torso.transform.position, Time.deltaTime * heightSmoothSpeed);
             torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, Quaternion.identity, Time.deltaTime * 5f);
         }
-
-        //smooth Y
-        Vector3 pos = torso.transform.position;
-        pos.y = currentTorsoY;
-        torso.transform.position = pos;
     }
 
     //keep distance pointers following torso
