@@ -1190,6 +1190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b242e00976d37643a049974cb4ae1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Manager: {fileID: 5897461097944980328}
   HeadsUp: {fileID: 5897461096895600518}
   SFX_Lookup: {fileID: 11400000, guid: 4dde26c82c18a8645adc92154555d5c3, type: 2}
   AllGestures:

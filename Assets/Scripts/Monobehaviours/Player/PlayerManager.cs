@@ -158,13 +158,17 @@ public class PlayerManager : MonoBehaviour{
 
     // Items
 
+    public void SpawnItem(ItemInstance item, float speed){
+        item_manager.SpawnWorldItem(item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * speed);
+    }
+
     void DropItem(){
         if(!Input.GetButtonDown("Drop Item"))
             return;
         ItemInstance dropped_item = _ViewModelController.EquippedItem();
         if(!_ViewModelController.DropItem())
             return;
-        item_manager.SpawnWorldItem(dropped_item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * throw_speed);
+        SpawnItem(dropped_item, throw_speed);
     }
 
     // Gestures

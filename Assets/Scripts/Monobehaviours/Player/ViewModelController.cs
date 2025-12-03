@@ -8,6 +8,7 @@ using ItemUtils;
 public class ViewModelController : MonoBehaviour{
 
     [Header(" - MAIN - ")]
+    [SerializeField] PlayerManager Manager;
     [SerializeField] PlayerHeadsUpUI HeadsUp;
     [SerializeField] SoundEffectLookup SFX_Lookup;
 
@@ -94,10 +95,16 @@ public class ViewModelController : MonoBehaviour{
     // Items //
 
     public void EquipItem(ItemInstance item){
-        equipped_item = item;
         DisableAll(ref AllViewmodels);
-        if(item == null)
+        
+        if(item == null){
+            equipped_item = null;
             return;
+        }
+
+        if(equipped_item != null)
+            Manager.SpawnItem(equipped_item, 2.5f);
+        equipped_item = item;
 
         HeadsUp.SetRecoil(new Vector3(0, -0.5f, 0.1f), 10f, true);
         switch(equipped_item.GetTypeDef()){
