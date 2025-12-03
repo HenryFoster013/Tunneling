@@ -163,7 +163,7 @@ public class ProceduralMovementAPI : MonoBehaviour
             return;
         }
 
-        // Detect climbable surfaces
+        //detect climbable surfaces
         Collider[] hits = Physics.OverlapSphere(climbField.transform.position, climbField.radius);
         bool onClimbable = false;
         Vector3 climbNormal = Vector3.up;
@@ -175,11 +175,11 @@ public class ProceduralMovementAPI : MonoBehaviour
             {
                 onClimbable = true;
 
-                // Normal pointing away from wall
+                //normal pointing away from wall
                 closestPoint = hit.ClosestPoint(torso.transform.position);
                 climbNormal = (torso.transform.position - closestPoint).normalized;
 
-                // Decide orientation
+                //decide orientation
                 float dotUp = Vector3.Dot(climbNormal, Vector3.up);
                 if (dotUp > 0.7f)
                     CurrentPlane = Orientation.Normal;
@@ -196,10 +196,10 @@ public class ProceduralMovementAPI : MonoBehaviour
 
         if (isClimbing)
         {
-            // Align rotation
+            //align rotation
             ApplyClimbRotation(climbNormal);
 
-            // Apply height/offset along new normal
+            //apply height/offset along new normal
             Vector3 desiredPos = closestPoint + climbNormal * (torsoHeightOffset - bobOffset);
             torso.transform.position = Vector3.Lerp(torso.transform.position, desiredPos, Time.deltaTime * heightSmoothSpeed);
         }
@@ -230,7 +230,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         PlainRotationManager();
         BobManager();
 
-        //climbingManager();
+        climbingManager();
 
         //check if step pair should move
         TryStepPairs();
@@ -277,6 +277,7 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     void PlainRotationManager()
     {
+        if (isClimbing) return;
         //directions to check for a surface: down/forward/back/left/right
         Vector3[] rayDirections = {
             Vector3.down,
@@ -343,13 +344,17 @@ public class ProceduralMovementAPI : MonoBehaviour
             //align torso rotation to surface
             Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, hit.normal).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(forward, hit.normal);
-            torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, targetRotation, Time.deltaTime * 5f);
+            if (!isClimbing){
+                torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, targetRotation, Time.deltaTime * 5f);
+                }
         }
         else
         {
             // if nothing hit, keep current position or return to default
             torso.transform.position = Vector3.Lerp(torso.transform.position, torso.transform.position, Time.deltaTime * heightSmoothSpeed);
-            torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, Quaternion.identity, Time.deltaTime * 5f);
+            if (!isClimbing){
+                torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, Quaternion.identity, Time.deltaTime * 5f);
+            }
         }
     }
 
