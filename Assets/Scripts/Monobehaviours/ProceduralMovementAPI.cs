@@ -97,6 +97,14 @@ public class ProceduralMovementAPI : MonoBehaviour
     [Header("Grounded RayCast Settings")]
     public float rayStartOffset;
 
+    [Header("Movement Settings")]
+    private Vector3 moveTarget;
+    public float moveSpeed = 3f;
+
+    //[Header("Collision Settings")]
+    //TODO
+
+
     public enum Orientation{
         Normal, //default
         UpsideDown, //180 degrees
@@ -115,6 +123,12 @@ public class ProceduralMovementAPI : MonoBehaviour
             leg.plantedPos = leg.target.position;
         }
 
+    }
+
+
+    public void SetTargetPosition(Vector3 pos)
+    {
+        moveTarget = pos;
     }
 
     void StartBob()
@@ -201,7 +215,7 @@ public class ProceduralMovementAPI : MonoBehaviour
     }
 
     void Update()
-    {
+    {   
         MaintainTorsoHeightAndRotation();
         UpdateDistancePointers();
         GroundedChecker(rayStartOffset);

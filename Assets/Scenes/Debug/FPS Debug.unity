@@ -1267,6 +1267,11 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 5897461096485859449, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
   m_PrefabInstance: {fileID: 978082322}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &978082325 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2615063844632500719, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
+  m_PrefabInstance: {fileID: 978082322}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1157706573
 GameObject:
   m_ObjectHideFlags: 0
@@ -2551,7 +2556,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234505996136204201}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64d6ee4d69dfd134482ef19f06192179, type: 3}
   m_Name: 
@@ -2579,7 +2584,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234505996136204201}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c44f3f128bf261f4596c6147110ad53f, type: 3}
   m_Name: 
@@ -3548,7 +3553,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1032
   torsoHeightOffset: 1.4
-  heightSmoothSpeed: 10
+  heightSmoothSpeed: 5
   legs:
   - target: {fileID: 234505997642577604}
     distanceRef: {fileID: 234505997391707673}
@@ -3592,6 +3597,12 @@ MonoBehaviour:
   CanClimb: 0
   climbField: {fileID: 0}
   rayStartOffset: 1.55
+  moveSpeed: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  torsoRadius: 0.5
+  playerPos: {fileID: 0}
 --- !u!1 &234505997371036689
 GameObject:
   m_ObjectHideFlags: 0
@@ -5793,7 +5804,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1032
   torsoHeightOffset: 2
-  heightSmoothSpeed: 10
+  heightSmoothSpeed: 5
   legs:
   - target: {fileID: 725489835218950778}
     distanceRef: {fileID: 725489835777109818}
@@ -5867,6 +5878,12 @@ MonoBehaviour:
   CanClimb: 1
   climbField: {fileID: 725489834266200530}
   rayStartOffset: 2.5
+  moveSpeed: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  torsoRadius: 0.5
+  playerPos: {fileID: 978082325}
 --- !u!1 &725489834826338672
 GameObject:
   m_ObjectHideFlags: 0
