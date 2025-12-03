@@ -92,6 +92,8 @@ public class ProceduralMovementAPI : MonoBehaviour
     private bool isClimbing;
     public SphereCollider climbField;
     private Orientation CurrentPlane = Orientation.Normal;
+    private Vector3 climbStartForward;
+    private float rotationSmoothSpeed = 10f; 
 
 
     [Header("Grounded RayCast Settings")]
@@ -131,6 +133,11 @@ public class ProceduralMovementAPI : MonoBehaviour
         moveTarget = pos;
     }
 
+    public Orientation GetOrientation()
+    {
+        return CurrentPlane;
+    }
+
     void StartBob()
     {
         if (!isBobbing)
@@ -141,6 +148,10 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
     }
 
+    public float getHeightOffset()
+    {
+        return torsoHeightOffset;
+    }
     void BobManager()
     {
         if (!isBobbing) return;
@@ -154,7 +165,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
     }
 
-    void climbingManager() //FIX
+    void climbingManager()
     {
         if (!CanClimb)
         {
@@ -168,52 +179,121 @@ public class ProceduralMovementAPI : MonoBehaviour
         bool onClimbable = false;
         Vector3 climbNormal = Vector3.up;
         Vector3 closestPoint = torso.transform.position;
+        float closestDistance = float.MaxValue;
 
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Climbable"))
             {
                 onClimbable = true;
-
-                //normal pointing away from wall
-                closestPoint = hit.ClosestPoint(torso.transform.position);
-                climbNormal = (torso.transform.position - closestPoint).normalized;
-
-                //decide orientation
-                float dotUp = Vector3.Dot(climbNormal, Vector3.up);
-                if (dotUp > 0.7f)
-                    CurrentPlane = Orientation.Normal;
-                else if (dotUp < -0.7f)
-                    CurrentPlane = Orientation.UpsideDown;
-                else
-                    CurrentPlane = Orientation.Sideways;
-
-                break;
+                
+                //find and use the closest climbable surface
+                Vector3 hitClosestPoint = hit.ClosestPoint(torso.transform.position);
+                float distance = Vector3.Distance(torso.transform.position, hitClosestPoint);
+                
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPoint = hitClosestPoint;
+                    
+                    //normal pointing away from wall
+                    climbNormal = (torso.transform.position - closestPoint).normalized;
+                    if (climbNormal.magnitude < 0.01f) //counteract zero vector message/error
+                        climbNormal = -hit.transform.forward;
+                    
+                    // decide orientation with smoother transitions
+                    float dotUp = Vector3.Dot(climbNormal, Vector3.up);
+                    
+                    //use hysteresis to prevent rapid orientation switching
+                    if (dotUp > 0.7f)
+                        CurrentPlane = Orientation.Normal;
+                    else if (dotUp < -0.7f)
+                        CurrentPlane = Orientation.UpsideDown;
+                    else
+                        CurrentPlane = Orientation.Sideways;
+                }
             }
         }
 
+        //smooth transition when starting/stopping climbing
+        if (onClimbable && !isClimbing)
+        {
+            // when starting to climb, store the current forward direction
+            climbStartForward = torso.transform.forward;
+        }
+        
         isClimbing = onClimbable;
 
         if (isClimbing)
         {
-            //align rotation
-            ApplyClimbRotation(climbNormal);
-
-            //apply height/offset along new normal
+            //apply rotation
+            ApplyClimbRotationSmooth(climbNormal);
+            
+            //apply height offset along new normal
             Vector3 desiredPos = closestPoint + climbNormal * (torsoHeightOffset - bobOffset);
             torso.transform.position = Vector3.Lerp(torso.transform.position, desiredPos, Time.deltaTime * heightSmoothSpeed);
         }
+        else
+        {
+            //smoothly return to normal orientation when not climbing
+            torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, 
+                Quaternion.LookRotation(torso.transform.forward, Vector3.up), 
+                Time.deltaTime * rotationSmoothSpeed);
+        }
     }
 
-    void ApplyClimbRotation(Vector3 surfaceNormal)
+    void ApplyClimbRotationSmooth(Vector3 surfaceNormal)
     {
-        // forward projected onto the plane perpendicular to the surface
-        Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, surfaceNormal).normalized;
-
-        // instantly set rotation
-        torso.transform.rotation = Quaternion.LookRotation(forward, surfaceNormal);
+        //calculate forward direction with better handling for transitions
+        Vector3 currentForward = torso.transform.forward;
+        
+        //when surface normal changes dramatically, preserve the character's intended movement direction
+        Vector3 projectedForward = Vector3.ProjectOnPlane(currentForward, surfaceNormal);
+        
+        //if projection fails (vector too small), use a fallback
+        if (projectedForward.magnitude < 0.1f)
+        {
+            //preserve horizontal movement direction
+            Vector3 horizontalForward = Vector3.ProjectOnPlane(climbStartForward, Vector3.up);
+            if (horizontalForward.magnitude > 0.1f)
+            {
+                projectedForward = Vector3.ProjectOnPlane(horizontalForward, surfaceNormal);
+            }
+            else
+            {
+                // worst case: use character's right cross surface normal
+                projectedForward = Vector3.Cross(torso.transform.right, surfaceNormal);
+            }
+        }
+        
+        projectedForward = projectedForward.normalized;
+        
+        //smooth rotation transition
+        Quaternion targetRotation = Quaternion.LookRotation(projectedForward, surfaceNormal);
+        torso.transform.rotation = Quaternion.Slerp(torso.transform.rotation, 
+            targetRotation, Time.deltaTime * rotationSmoothSpeed);
     }
 
+    //smoother transition option
+    void ApplyClimbRotationSmooth2(Vector3 surfaceNormal)
+    {
+        //blend between current up and target surface normal
+        Vector3 blendedUp = Vector3.Slerp(torso.transform.up, surfaceNormal, Time.deltaTime * rotationSmoothSpeed);
+        
+        //preserve forward direction as much as possible
+        Vector3 currentForward = torso.transform.forward;
+        Vector3 right = Vector3.Cross(blendedUp, currentForward);
+        
+        if (right.magnitude < 0.1f)
+        {
+            currentForward = Vector3.Cross(torso.transform.right, blendedUp);
+        }
+        
+        Vector3 forward = Vector3.Cross(right, blendedUp).normalized;
+        
+        Quaternion targetRotation = Quaternion.LookRotation(forward, blendedUp);
+        torso.transform.rotation = targetRotation;
+    }
     void StoreOffsets(){
         // store horizontal offsets (might not be needed)
         foreach (ProceduralLeg leg in legs){
@@ -235,6 +315,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         //check if step pair should move
         TryStepPairs();
         UpdateStepMotion();
+
     }
 
     //automatically assign the steppairs if none have been set.
@@ -330,16 +411,16 @@ public class ProceduralMovementAPI : MonoBehaviour
         {
             Debug.DrawRay(rayOrigin, rayDirection * rayLength, Color.red);
 
-            if (CurrentPlane == Orientation.Normal){
+            //if (CurrentPlane == Orientation.Normal){
                 // smoothly move torso along local down direction
                 float targetHeight = hit.point.y + torsoHeightOffset - bobOffset;
-
+                currentTorsoY = Mathf.Lerp(currentTorsoY, targetHeight, Time.deltaTime * heightSmoothSpeed);
                 //project torso position along torso.up to hit point for non-flat surfaces
                 Vector3 desiredPos = hit.point + torso.transform.up * torsoHeightOffset - torso.transform.up * bobOffset;
 
                 // smooth the position
                 torso.transform.position = Vector3.Lerp(torso.transform.position, desiredPos, Time.deltaTime * heightSmoothSpeed);
-                }
+                //}
 
             //align torso rotation to surface
             Vector3 forward = Vector3.ProjectOnPlane(torso.transform.forward, hit.normal).normalized;

@@ -2587,7 +2587,9 @@ MonoBehaviour:
   spiderBody: {fileID: 234505997654592000}
   player: {fileID: 978082323}
   ChasePlayer: 0
+  proceduralMovementAPI: {fileID: 234505997176622924}
   xCord: 0
+  yCord: 0
   zCord: 0
   speedFactor: 5
   rotationSpeed: 180
@@ -5038,8 +5040,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5
-  m_Center: {x: 0, y: 0, z: -0.0000009536743}
+  m_Radius: 2.1729054
+  m_Center: {x: 3.2311743e-27, y: -0.67290545, z: -0.0000009536743}
 --- !u!1 &725489834354809910
 GameObject:
   m_ObjectHideFlags: 0
@@ -7351,7 +7353,9 @@ MonoBehaviour:
   spiderBody: {fileID: 725489834266200363}
   player: {fileID: 978082323}
   ChasePlayer: 0
+  proceduralMovementAPI: {fileID: 725489834703867942}
   xCord: 5
+  yCord: 50
   zCord: 5
   speedFactor: 5
   rotationSpeed: 180

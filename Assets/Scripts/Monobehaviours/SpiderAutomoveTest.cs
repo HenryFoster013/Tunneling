@@ -8,8 +8,12 @@ public class SpiderAutomoveTest : MonoBehaviour
     public GameObject player;
     public bool ChasePlayer;
 
-    public float xCord, zCord; //target position
+    public ProceduralMovementAPI proceduralMovementAPI;
+
+    public float xCord, yCord, zCord; //target position
     private Vector3 movePosition;
+    private float yOffset;
+    private Vector3 originalMovePos;
 
     [SerializeField, Range(0f, 15f)]
     public float speedFactor = 5f; //movement speed
@@ -37,7 +41,7 @@ public class SpiderAutomoveTest : MonoBehaviour
     {
         movePosition = new Vector3(
             xCord,
-            spiderBody.transform.position.y,
+            yCord,        //spiderBody.transform.position.y,
             zCord
         );
     }
@@ -46,7 +50,7 @@ public class SpiderAutomoveTest : MonoBehaviour
     {
         movePosition = new UnityEngine.Vector3(
         location.x,
-        spiderBody.transform.position.y,
+        location.y + yOffset,  //spiderBody.transform.position.y,
         location.z
     );
     }
@@ -60,13 +64,25 @@ public class SpiderAutomoveTest : MonoBehaviour
         ChasePlayer = val;
     }
 
+    void LateUpdate()
+    {
+        if (proceduralMovementAPI.GetOrientation() == ProceduralMovementAPI.Orientation.UpsideDown)
+        {
+            yOffset = proceduralMovementAPI.getHeightOffset() * -1;
+        }
+        else
+        {
+            yOffset = proceduralMovementAPI.getHeightOffset();
+        }
+    }
+
     void RotateAndChase()
     {
         if (ChasePlayer)
         {
             movePosition = new Vector3(
                 player.transform.position.x,
-                spiderBody.transform.position.y,
+                player.transform.position.y,        //spiderBody.transform.position.y,
                 player.transform.position.z
             );
         }
@@ -129,6 +145,8 @@ public class SpiderAutomoveTest : MonoBehaviour
     //externally update target position
     public void SetTargetPosition(Vector3 newTarget)
     {
-        movePosition = new Vector3(newTarget.x, spiderBody.transform.position.y, newTarget.z);
+        originalMovePos = newTarget;
+       // movePosition = new Vector3(newTarget.x, spiderBody.transform.position.y, newTarget.z);
+        movePosition = new Vector3(newTarget.x, newTarget.y, newTarget.z);
     }
 }

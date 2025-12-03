@@ -12,8 +12,8 @@ public class SpiderTracker : MonoBehaviour
         {
             //update this object to follow SpiderBody's Y
             Vector3 trackerPos = transform.position;
-            trackerPos.y = SpiderBody.transform.position.y; // follow Y
-            transform.position = trackerPos;
+            //trackerPos.y = SpiderBody.transform.position.y; // follow Y
+            //transform.position = trackerPos;
 
             //tracker takes X/Z from SpiderBody, keeps Y
             Vector3 trackerEuler = new Vector3(
