@@ -139,10 +139,14 @@ public class ViewModelController : MonoBehaviour{
         FlashlightLight.SetActive(flashlight_on);
         HeadsUp.SetRecoil(new Vector3(0, -0.1f, -0.1f), 10f, true);
         PlaySFX("Flashlight", SFX_Lookup);
+        if(flashlight_on)
+            equipped_item.stored_int = 1;
+        else
+            equipped_item.stored_int = 0;
     }
 
     void DefaultFlashlight(){
-        flashlight_on = false;
+        flashlight_on = (equipped_item.stored_int == 1);
         FlashlightLight.SetActive(flashlight_on);
         FlashlightViewmodel.SetActive(true);
     }
@@ -159,7 +163,7 @@ public class ViewModelController : MonoBehaviour{
         irish_beverage_drinking = true;
         RefreshIrishBeverage();
         HeadsUp.SetRecoil(new Vector3(0, -0.3f, 0.3f), 2f, true);
-        PlaySFX("Sip_Beer", SFX_Lookup);
+        PlaySFX("Beer_Sip", SFX_Lookup);
         yield return new WaitForSeconds(irish_beverage_time);
         HeadsUp.SetRecoil(new Vector3(0, -0.5f, -0.5f), 7f, true);
         irish_beverage_drinking = false;

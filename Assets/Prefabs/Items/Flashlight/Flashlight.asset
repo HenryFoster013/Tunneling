@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24cd4dcb3d0893bfcbca7a42a69aa4bb, type: 3}
-  m_Name: Irish Beverage
+  m_Name: Flashlight
   m_EditorClassIdentifier: 
-  Name: Irish Beverage
-  Type: IRISH BEVERAGE
-  PickupSound: {fileID: 11400000, guid: 1aaf65cdd1f340349b3643a4f44b5b01, type: 2}
-  CollisionSound: {fileID: 11400000, guid: 4965f7193162e9ceab0f06e24c2be1bd, type: 2}
-  Model: {fileID: 6404938170950622504, guid: 8135d05815d6a6262ad0536b54b27b5b, type: 3}
+  Name: Flashlight
+  Type: FLASHLIGHT
+  PickupSound: {fileID: 11400000, guid: ac19248e270fcb0cf9d469051379b7ea, type: 2}
+  CollisionSound: {fileID: 0}
+  Model: {fileID: 6404938170950622504, guid: 37cfdc9f2581efc4d9bc758aef9605b0, type: 3}

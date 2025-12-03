@@ -64,4 +64,6 @@ public class WorldItem : MonoBehaviour{
             return;
         PlaySFX(item_instance.GetCollisionSound());
     }
+
+    public ItemInstance GetInstance(){return item_instance;}
 }

@@ -22,7 +22,7 @@ MonoBehaviour:
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
   PitchVariation: 0.25
-  BaseVolume: 0.6
-  VolumeVariation: 0.1
+  BaseVolume: 0.2
+  VolumeVariation: 0
   _3D: 1
   Radius: 15

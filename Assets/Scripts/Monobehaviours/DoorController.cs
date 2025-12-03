@@ -102,6 +102,8 @@ public class DoorController : MonoBehaviour{
     }
 
     public void EnterOpen(Transform t){
+        if(open)
+            return;
         if(t.tag == "Player"){
             open = true;
             PlaySFX(OpenSFX, transform.position);

@@ -122,6 +122,13 @@ public class PlayerManager : MonoBehaviour{
         
         interact_buffer = trans;
 
+        CheckTransform(trans);
+        CheckTransform(trans.parent);
+    }
+
+    void CheckTransform(Transform trans){
+        if(trans == null)
+            return;
         if(trans.tag == "Interactable"){
             interact = trans.GetComponent<Interactable>();
             item = null;
