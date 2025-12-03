@@ -1267,11 +1267,6 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 5897461096485859449, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
   m_PrefabInstance: {fileID: 978082322}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &978082325 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2615063844632500719, guid: 62c5c02e4de9b708497b8e1d5ce3a06c, type: 3}
-  m_PrefabInstance: {fileID: 978082322}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1157706573
 GameObject:
   m_ObjectHideFlags: 0
@@ -3598,11 +3593,6 @@ MonoBehaviour:
   climbField: {fileID: 0}
   rayStartOffset: 1.55
   moveSpeed: 3
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  torsoRadius: 0.5
-  playerPos: {fileID: 0}
 --- !u!1 &234505997371036689
 GameObject:
   m_ObjectHideFlags: 0
@@ -5872,18 +5862,13 @@ MonoBehaviour:
   stepPairs:
   - legIndices: 0000000001000000
   - legIndices: 0200000003000000
-  offsetRange: 0.1
+  offsetRange: 0.05
   StepSound: {fileID: 11400000, guid: af04bcb6be726da489d401e98d77c80a, type: 2}
   Bobbing: 1
   CanClimb: 1
   climbField: {fileID: 725489834266200530}
   rayStartOffset: 2.5
   moveSpeed: 3
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  torsoRadius: 0.5
-  playerPos: {fileID: 978082325}
 --- !u!1 &725489834826338672
 GameObject:
   m_ObjectHideFlags: 0

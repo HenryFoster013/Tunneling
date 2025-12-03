@@ -154,28 +154,33 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
     }
 
-    void climbingManager()
+    void climbingManager() //FIX
     {
-        if (!CanClimb) return;
+        if (!CanClimb)
+        {
+            isClimbing = false;
+            CurrentPlane = Orientation.Normal;
+            return;
+        }
 
+        // Detect climbable surfaces
         Collider[] hits = Physics.OverlapSphere(climbField.transform.position, climbField.radius);
         bool onClimbable = false;
+        Vector3 climbNormal = Vector3.up;
+        Vector3 closestPoint = torso.transform.position;
 
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Climbable"))
             {
-                //Debug.Log("Hit a climbable wall");
                 onClimbable = true;
 
-                // get closest point on surface to spider
-                Vector3 closestPoint = hit.ClosestPoint(torso.transform.position);
+                // Normal pointing away from wall
+                closestPoint = hit.ClosestPoint(torso.transform.position);
+                climbNormal = (torso.transform.position - closestPoint).normalized;
 
-                // surface normal pointing away from the wall
-                Vector3 normal = (torso.transform.position - closestPoint).normalized;
-
-                // decide orientation
-                float dotUp = Vector3.Dot(normal, Vector3.up);
+                // Decide orientation
+                float dotUp = Vector3.Dot(climbNormal, Vector3.up);
                 if (dotUp > 0.7f)
                     CurrentPlane = Orientation.Normal;
                 else if (dotUp < -0.7f)
@@ -183,18 +188,20 @@ public class ProceduralMovementAPI : MonoBehaviour
                 else
                     CurrentPlane = Orientation.Sideways;
 
-                ApplyClimbRotation(normal);
-
                 break;
             }
         }
 
         isClimbing = onClimbable;
 
-        if (!onClimbable)
+        if (isClimbing)
         {
-            CurrentPlane = Orientation.Normal;
-            ApplyClimbRotation(Vector3.up);
+            // Align rotation
+            ApplyClimbRotation(climbNormal);
+
+            // Apply height/offset along new normal
+            Vector3 desiredPos = closestPoint + climbNormal * (torsoHeightOffset - bobOffset);
+            torso.transform.position = Vector3.Lerp(torso.transform.position, desiredPos, Time.deltaTime * heightSmoothSpeed);
         }
     }
 
@@ -223,7 +230,7 @@ public class ProceduralMovementAPI : MonoBehaviour
         PlainRotationManager();
         BobManager();
 
-        climbingManager();
+        //climbingManager();
 
         //check if step pair should move
         TryStepPairs();
@@ -247,7 +254,7 @@ public class ProceduralMovementAPI : MonoBehaviour
 
     void GroundedChecker(float offset){
     // pass the torso's current surface normal to each leg
-        Vector3 surfaceNormal = torso.transform.up; // or computed via your torso ray
+        Vector3 surfaceNormal = torso.transform.up; 
 
         foreach (ProceduralLeg leg in legs){
             leg.UpdateGroundPosition(groundLayer, offset, 10f, surfaceNormal);
