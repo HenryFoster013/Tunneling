@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour{
     [Header(" - References - ")]
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] ViewModelController _ViewModelController;
+    [SerializeField] PlayerController _PlayerController;
     [Header(" - Interactions - ")]
     [SerializeField] Transform HeadPoint;
     [SerializeField] LayerMask InteractLayers;
@@ -159,7 +160,7 @@ public class PlayerManager : MonoBehaviour{
     // Items
 
     public void SpawnItem(ItemInstance item, float speed){
-        item_manager.SpawnWorldItem(item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * speed);
+        item_manager.SpawnWorldItem(item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * speed + _PlayerController.true_velocity);
     }
 
     void DropItem(){
@@ -205,6 +206,16 @@ public class PlayerManager : MonoBehaviour{
             gestures_open = !gestures_open;
             GestureMenu.SetActive(gestures_open);
             PlaySFX("UI_Crack", SFX_Lookup);
+        }
+    }
+
+    // Events //
+
+    public void OpenDoor(DoorController door){
+        if(_PlayerController.sprinting){
+            _PlayerController.AddRecoil(22f, 0f, 0f);
+            PlaySFX("Door_Slam", _PlayerController.transform.position, SFX_Lookup);
+            door.Slammed();
         }
     }
 }

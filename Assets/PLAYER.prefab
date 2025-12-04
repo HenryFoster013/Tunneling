@@ -1176,8 +1176,6 @@ MonoBehaviour:
   ControllerSens: 50
   CanLook: 1
   CanMove: 1
-  ground_normal: {x: 0, y: 0, z: 0}
-  grounded: 0
 --- !u!114 &5897461097776437664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1324,7 +1322,7 @@ GameObject:
   - component: {fileID: 5897461097944980328}
   m_Layer: 0
   m_Name: PLAYER
-  m_TagString: Untagged
+  m_TagString: Player Master
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1361,6 +1359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SFX_Lookup: {fileID: 11400000, guid: 4dde26c82c18a8645adc92154555d5c3, type: 2}
   _ViewModelController: {fileID: 5897461097776437664}
+  _PlayerController: {fileID: 5897461097776437665}
   HeadPoint: {fileID: 5897461098156940084}
   InteractLayers:
     serializedVersion: 2

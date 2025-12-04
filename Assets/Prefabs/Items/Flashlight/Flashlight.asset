@@ -15,5 +15,5 @@ MonoBehaviour:
   Name: Flashlight
   Type: FLASHLIGHT
   PickupSound: {fileID: 11400000, guid: ac19248e270fcb0cf9d469051379b7ea, type: 2}
-  CollisionSound: {fileID: 0}
+  CollisionSound: {fileID: 11400000, guid: ef6f63bcbb027e242b156f28a782f84e, type: 2}
   Model: {fileID: 6404938170950622504, guid: 37cfdc9f2581efc4d9bc758aef9605b0, type: 3}

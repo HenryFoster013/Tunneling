@@ -10,19 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 145db9d5b91535341a353e4acc28fcf2, type: 3}
-  m_Name: Beer_Can
+  m_Name: Plastic_Drop
   m_EditorClassIdentifier: 
-  Name: Can_Beer
+  Name: Plastic_Drop
   BaseClip: {fileID: 0}
   ClipRange:
-  - {fileID: 8300000, guid: f893d861535109771816997f52b65e71, type: 3}
-  - {fileID: 8300000, guid: 7196bd86480e51f9e8f0cb3af94ec3f9, type: 3}
-  - {fileID: 8300000, guid: eb5bc1c29716d3c1f8ddebf5b72ded72, type: 3}
-  - {fileID: 8300000, guid: b7226aeef70a76919b05890bb9104016, type: 3}
+  - {fileID: 8300000, guid: b6bb7ef654d2a304188294e03e9aa697, type: 3}
+  - {fileID: 8300000, guid: 1fa3ee655a49b5d4b87f61e44f0d3e93, type: 3}
+  - {fileID: 8300000, guid: 10073e25ab6270d4f96118f80ac6cace, type: 3}
   Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
   BasePitch: 1
-  PitchVariation: 0.25
-  BaseVolume: 0.2
+  PitchVariation: 0.2
+  BaseVolume: 0.15
   VolumeVariation: 0
   _3D: 1
   Radius: 15

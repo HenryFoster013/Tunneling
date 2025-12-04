@@ -62,7 +62,7 @@ public class WorldItem : MonoBehaviour{
     void OnCollisionEnter(Collision other){
         if(!useable)
             return;
-        PlaySFX(item_instance.GetCollisionSound());
+        PlaySFX(item_instance.GetCollisionSound(), transform.position);
     }
 
     public ItemInstance GetInstance(){return item_instance;}

@@ -13,11 +13,15 @@ public class DoorController : MonoBehaviour{
     [SerializeField] SoundEffect PeekSFX;
     [SerializeField] SoundEffect OpenSFX;
     [SerializeField] SoundEffect CloseSFX;
+
+    PlayerManager player;
      
     const float peek_rotation = 25f;
     const float hinge_speed = 5f;
+    const float slam_speed = 15f;
 
     float hinge_rot, target_rot;
+    float current_speed;
     float direction = 1f;
     bool open;
     List<Transform> players_in_peek = new List<Transform>();
@@ -25,12 +29,20 @@ public class DoorController : MonoBehaviour{
     // Start //
 
     void Start(){
+        StartCoroutine(GetPlayer());
         Defaults();
+    }
+
+    IEnumerator GetPlayer(){
+        yield return new WaitForEndOfFrame();
+        if(player == null)
+            player = GameObject.FindGameObjectWithTag("Player Master").GetComponent<PlayerManager>();
     }
 
     void Defaults(){
         hinge_rot = 0f;
         target_rot = 0f;
+        current_speed = hinge_speed;
         open = false;
         DoorCollider.SetActive(false);
     }
@@ -57,7 +69,7 @@ public class DoorController : MonoBehaviour{
     }
 
     void LerpRotation(){
-        hinge_rot = Mathf.Lerp(hinge_rot, target_rot, hinge_speed * Time.deltaTime);
+        hinge_rot = Mathf.Lerp(hinge_rot, target_rot, current_speed * Time.deltaTime);
         Hinge.localRotation = Quaternion.Euler(0f, hinge_rot, 0f);
     }
 
@@ -107,6 +119,12 @@ public class DoorController : MonoBehaviour{
         if(t.tag == "Player"){
             open = true;
             PlaySFX(OpenSFX, transform.position);
+            if(player != null)
+                player.OpenDoor(this);
         }
+    }
+
+    public void Slammed(){
+        current_speed = slam_speed;
     }
 }
