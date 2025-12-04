@@ -112,16 +112,12 @@ public class PlayerManager : MonoBehaviour{
         interact = null;
         item = null;
         RaycastHit hit;
-        if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers)){
-            print("Hit " + hit.transform.name);
+        if(Physics.Raycast(HeadPoint.position, HeadPoint.forward, out hit, interact_distance, InteractLayers))
             MarkInteract(hit.transform);
-        }
     }
 
     void MarkInteract(Transform trans){
 
-        print("Got a mark");
-        
         if(trans.tag != "Interactable" && trans.tag != "Item")
             return;
         if(trans == interact_buffer) // buffering using a transform to avoid excessive GetComponent calls

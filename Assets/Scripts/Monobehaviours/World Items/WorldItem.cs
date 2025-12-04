@@ -33,7 +33,7 @@ public class WorldItem : MonoBehaviour{
         yield return new WaitForEndOfFrame();
         LoadDefinition();
         MarkUsable();
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         can_collide = true;
     }
 
