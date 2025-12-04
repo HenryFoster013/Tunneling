@@ -11,6 +11,7 @@ public class WorldItem : MonoBehaviour{
 
     ItemInstance item_instance;
     bool useable;
+    bool can_collide;
 
     // Setup //
 
@@ -32,12 +33,22 @@ public class WorldItem : MonoBehaviour{
         yield return new WaitForEndOfFrame();
         LoadDefinition();
         MarkUsable();
+        yield return new WaitForSeconds(1);
+        can_collide = true;
     }
 
     // Usablity //
 
-    void MarkUseless(){this.transform.tag = "Untagged"; useable = false;}
-    void MarkUsable(){this.transform.tag = "Item"; useable = true;}
+    void MarkUseless(){
+        this.transform.tag = "Untagged"; 
+        useable = false; 
+        can_collide = false;
+    }
+
+    void MarkUsable(){
+        this.transform.tag = "Item"; 
+        useable = true;
+    }
 
     // Outside Interaction //
 
@@ -60,7 +71,7 @@ public class WorldItem : MonoBehaviour{
     }
 
     void OnCollisionEnter(Collision other){
-        if(!useable)
+        if(!useable || !can_collide)
             return;
         PlaySFX(item_instance.GetCollisionSound(), transform.position);
     }

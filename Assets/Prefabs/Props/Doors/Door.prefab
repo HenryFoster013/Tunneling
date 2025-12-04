@@ -179,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5022945737196987705}
   - component: {fileID: 5022945737196987711}
+  - component: {fileID: 2369527740326977662}
   - component: {fileID: 5022945737196987704}
   m_Layer: 0
   m_Name: Door
@@ -223,6 +224,35 @@ MonoBehaviour:
   PeekSFX: {fileID: 11400000, guid: 1387b7701d6333940b37e7b5d19b6956, type: 2}
   OpenSFX: {fileID: 11400000, guid: e59ead1db91d95f44ab03caa2ace5363, type: 2}
   CloseSFX: {fileID: 11400000, guid: ab1af653e2a2fb44fa8c3f9cee88a54b, type: 2}
+--- !u!114 &2369527740326977662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5022945737196987706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1051520f524b02e8166c929f448176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5022945737196987711}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  DisplayText: Close
+  UseOnce: 0
 --- !u!54 &5022945737196987704
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -416,7 +446,7 @@ GameObject:
   - component: {fileID: 5022945738161630650}
   - component: {fileID: 5022945738161630649}
   - component: {fileID: 5022945738161630648}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Outer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -624,7 +654,7 @@ GameObject:
   - component: {fileID: 5022945739065629956}
   - component: {fileID: 5022945739065630011}
   - component: {fileID: 5022945739065630010}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Inner
   m_TagString: Untagged
   m_Icon: {fileID: 0}

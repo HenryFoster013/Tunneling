@@ -1363,7 +1363,7 @@ MonoBehaviour:
   HeadPoint: {fileID: 5897461098156940084}
   InteractLayers:
     serializedVersion: 2
-    m_Bits: 521
+    m_Bits: 1545
   WatermarkText: {fileID: 5940853221263640293}
   GestureMenu: {fileID: 6102417983714339853}
   InteractIcon: {fileID: 3198144247819260200}

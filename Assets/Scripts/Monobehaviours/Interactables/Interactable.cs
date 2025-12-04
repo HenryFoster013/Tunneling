@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static SoundUtils;
+using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour{
     
-    [Header(" - Base - ")]
-    [SerializeField] SoundEffectLookup SFX_Lookup;
+    [Header(" - To Call - ")]
+    public UnityEvent OnInteract;
+    [Header(" - Additionals - ")]
+    [SerializeField] string DisplayText;
     [SerializeField] bool UseOnce;
 
     bool used;
@@ -17,9 +20,11 @@ public class Interactable : MonoBehaviour{
     
     // Virtuals //
     
-    public virtual void Activate() { }
+    public virtual void Activate(){
+        OnInteract.Invoke();
+    }
 
-    public virtual string InteractText() {return "";}
+    public virtual string InteractText() {return DisplayText;}
 
     public virtual void Reset() { }
 
