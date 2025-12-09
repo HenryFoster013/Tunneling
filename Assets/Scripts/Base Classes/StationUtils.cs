@@ -60,10 +60,22 @@ namespace StationUtils{
 
     public class Station{
 
-        public string Name ;
+        public string name {get; private set;}
+        public StationMap map {get; private set;}
 
-        public Station(string name){
-            Name = name;
+        Seed seed;
+        StationNameGenerator name_generator;
+
+        // Constructors //
+
+        public Station(){seed = new Seed();}
+        public Station(int seed_key){seed = new Seed(seed_key);}
+        public Station(Seed seed_pass){seed = seed_pass;}
+
+        public void Generate(TextAsset prefixes, TextAsset suffixes, TextAsset additionals){
+            name_generator = new StationNameGenerator(prefixes, suffixes, additionals, seed);
+            map = new StationMap(seed, name_generator);
+            name = name_generator.NextName();
         }
     }
 }
