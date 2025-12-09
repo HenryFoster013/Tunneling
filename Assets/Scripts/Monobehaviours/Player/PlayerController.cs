@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour{
     const float crouch_height = 0.8f;
     const float head_height_speed = 18f;
     const float cam_float_speed = 35f;
+    const float recoil_return_speed = 8f;
     // Movement
     const float movement_speed = 5f;
     const float sprint_multipler = 1.8f;
@@ -51,12 +52,15 @@ public class PlayerController : MonoBehaviour{
 
     // Private Variables
     float x_rot, y_rot, displayed_x_rot, displayed_y_rot, head_tilt, head_height, footstep_timer;
-    bool grounded_buffer, walking, sprinting, crouching, camera_delayed, footstep_buffer;
-    Vector3 target_velocity, true_velocity;
+    bool grounded_buffer, camera_delayed, footstep_buffer;
+    Vector3 target_velocity, ground_normal, recoil;
 
-    public Vector3 ground_normal;
-
-    public bool grounded;
+    // Hidden Publics
+    public bool grounded {get; private set;}
+    public bool sprinting {get; private set;}
+    public bool walking {get; private set;}
+    public bool crouching {get; private set;}
+    public Vector3 true_velocity {get; private set;}
 
     // MAIN //
 
@@ -103,7 +107,8 @@ public class PlayerController : MonoBehaviour{
         y_rot += x_mod;
         displayed_x_rot = Mathf.Lerp(displayed_x_rot, x_rot, cam_float_speed * Time.deltaTime);
         displayed_y_rot = Mathf.Lerp(displayed_y_rot, y_rot, cam_float_speed * Time.deltaTime);
-        LowerHeadPivot.localRotation = Quaternion.Euler(displayed_x_rot, displayed_y_rot, head_tilt);
+        recoil = Vector3.Lerp(recoil, Vector3.zero, Time.deltaTime * recoil_return_speed);
+        LowerHeadPivot.localRotation = Quaternion.Euler(displayed_x_rot + recoil.x, displayed_y_rot + recoil.y, head_tilt + recoil.z);
     }
 
     // Movement //
@@ -233,6 +238,9 @@ public class PlayerController : MonoBehaviour{
         CameraAnim.SetInteger("speed", GetHeadBop());
         HeadsUp.SetSprinting(sprinting);
     }
+
+    public void AddRecoil(float x, float y, float z){AddRecoil(new Vector3(x,y,z));}
+    public void AddRecoil(Vector3 additional){recoil += additional;}
 
     // State Calculations
 
