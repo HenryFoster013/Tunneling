@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class SpiderAutomoveTest : MonoBehaviour
 {
+    [Header("Movement Settings")]
     public GameObject spiderBody;
     public GameObject player;
     public bool ChasePlayer;
+    private bool lookingForWall = false;
 
+    [Header("References")]
     public ProceduralMovementAPI proceduralMovementAPI;
+    public NavigationAPI navigationAPI;
 
+    [Header("Debug pointers")]
     public float xCord, yCord, zCord; //target position
     private Vector3 movePosition;
     private float yOffset;
     private Vector3 originalMovePos;
 
+    [Header("Settings")]
     [SerializeField, Range(0f, 15f)]
     public float speedFactor = 5f; //movement speed
     [SerializeField, Range(0f, 180f)]
@@ -90,7 +96,7 @@ public class SpiderAutomoveTest : MonoBehaviour
         Vector3 direction = movePosition - spiderBody.transform.position;
         float distance = direction.magnitude;
         
-        if (distance < 0.01f) return; // <-- stop if almost at target
+        if (distance < 0.3f) return; // <-- stop if almost at target
 
         // apply front offset
         Quaternion offset = Quaternion.identity;
@@ -119,6 +125,7 @@ public class SpiderAutomoveTest : MonoBehaviour
                 slopeEuler.z
             );
 
+            //PREVENT ROTATION IF X AND Z CLOSE ENOUGH TO IT DOESNT SPIN IN CIRCLES / FIX OFFSET Y ISSUE
             spiderBody.transform.rotation = Quaternion.RotateTowards(
                 spiderBody.transform.rotation,
                 Quaternion.Euler(finalEuler),
@@ -127,7 +134,7 @@ public class SpiderAutomoveTest : MonoBehaviour
         }
 
         // move toward target only if distance above threshold
-        if (distance > 0.01f)
+        if (distance > 0.3f)
         {
             spiderBody.transform.position = Vector3.MoveTowards(
                 spiderBody.transform.position,
@@ -142,11 +149,13 @@ public class SpiderAutomoveTest : MonoBehaviour
         RotateAndChase();
     }
 
+
     //externally update target position
     public void SetTargetPosition(Vector3 newTarget)
     {
         originalMovePos = newTarget;
        // movePosition = new Vector3(newTarget.x, spiderBody.transform.position.y, newTarget.z);
-        movePosition = new Vector3(newTarget.x, newTarget.y, newTarget.z);
+        movePosition = new Vector3(newTarget.x, newTarget.y + yOffset, newTarget.z);
     }
+
 }

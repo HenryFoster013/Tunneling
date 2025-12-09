@@ -1460,6 +1460,7 @@ GameObject:
   - component: {fileID: 1427041109}
   - component: {fileID: 1427041108}
   - component: {fileID: 1427041107}
+  - component: {fileID: 1427041110}
   m_Layer: 10
   m_Name: Cube (5)
   m_TagString: Climbable
@@ -1545,6 +1546,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427041105}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1427041110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427041105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9288b08b99c1a1459642e60ec0daa96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1542572879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2588,6 +2601,7 @@ MonoBehaviour:
   player: {fileID: 978082323}
   ChasePlayer: 0
   proceduralMovementAPI: {fileID: 234505997176622924}
+  navigationAPI: {fileID: 0}
   xCord: 0
   yCord: 0
   zCord: 0
@@ -5694,6 +5708,7 @@ GameObject:
   - component: {fileID: 725489834703867940}
   - component: {fileID: 725489834703867941}
   - component: {fileID: 725489834703867942}
+  - component: {fileID: 725489834703867943}
   m_Layer: 0
   m_Name: SPIDER_TEST
   m_TagString: Untagged
@@ -5871,6 +5886,27 @@ MonoBehaviour:
   climbField: {fileID: 725489834266200530}
   rayStartOffset: 2.5
   moveSpeed: 3
+--- !u!114 &725489834703867943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725489834703867938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc74a6026648b245ba266675ea9740b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  proceduralMovementAPI: {fileID: 725489834703867942}
+  torso: {fileID: 725489834266200364}
+  canClimb: 1
+  useNavMesh: 0
+  isProcedural: 0
+  FindingWall: 0
+  YThreshold: 3
+  scanRadius: 50
+  rayCount: 36
 --- !u!1 &725489834826338672
 GameObject:
   m_ObjectHideFlags: 0
@@ -7354,6 +7390,7 @@ MonoBehaviour:
   player: {fileID: 978082323}
   ChasePlayer: 0
   proceduralMovementAPI: {fileID: 725489834703867942}
+  navigationAPI: {fileID: 725489834703867943}
   xCord: 5
   yCord: 50
   zCord: 5

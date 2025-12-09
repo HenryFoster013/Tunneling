@@ -165,6 +165,10 @@ public class ProceduralMovementAPI : MonoBehaviour
         }
     }
 
+    public bool getClimbing(){
+        return isClimbing;
+    }
+
     void climbingManager()
     {
         if (!CanClimb)
@@ -300,6 +304,27 @@ public class ProceduralMovementAPI : MonoBehaviour
             leg.horizontalOffset = leg.distanceRef.position - torso.transform.position;
         }
     }
+    
+    void fixOrientation(){
+        Vector3 rot = torso.transform.eulerAngles;
+
+        //normalize angles to -180..180
+        float x = Mathf.DeltaAngle(0, rot.x);
+        float z = Mathf.DeltaAngle(0, rot.z);
+
+        //how close must the AI be to upright
+        const float uprightThreshold = 10f;
+
+        //if X and Z are both close to 0°, the spider is upright
+        if (Mathf.Abs(x) < uprightThreshold && Mathf.Abs(z) < uprightThreshold)
+        {
+            SetOrientation(Orientation.Normal);
+        }
+    }
+
+    public void SetOrientation(Orientation o){
+        CurrentPlane = o;
+    }
 
     void Update()
     {   
@@ -309,8 +334,8 @@ public class ProceduralMovementAPI : MonoBehaviour
         KeepFeetPlanted();
         PlainRotationManager();
         BobManager();
-
         climbingManager();
+        fixOrientation();
 
         //check if step pair should move
         TryStepPairs();
