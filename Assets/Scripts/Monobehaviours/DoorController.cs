@@ -13,11 +13,16 @@ public class DoorController : MonoBehaviour{
     [SerializeField] SoundEffect PeekSFX;
     [SerializeField] SoundEffect OpenSFX;
     [SerializeField] SoundEffect CloseSFX;
+
+    PlayerManager player;
      
     const float peek_rotation = 25f;
     const float hinge_speed = 5f;
+    const float close_speed = 8f;
+    const float slam_speed = 15f;
 
     float hinge_rot, target_rot;
+    float current_speed;
     float direction = 1f;
     bool open;
     List<Transform> players_in_peek = new List<Transform>();
@@ -25,14 +30,36 @@ public class DoorController : MonoBehaviour{
     // Start //
 
     void Start(){
+        StartCoroutine(GetPlayer());
         Defaults();
     }
 
+    IEnumerator GetPlayer(){
+        yield return new WaitForEndOfFrame();
+        if(player == null)
+            player = GameObject.FindGameObjectWithTag("Player Master").GetComponent<PlayerManager>();
+    }
+
     void Defaults(){
-        hinge_rot = 0f;
-        target_rot = 0f;
+        target_rot = 0;
         open = false;
-        DoorCollider.SetActive(false);
+        players_in_peek = new List<Transform>();
+        hinge_rot = 0f;
+        current_speed = hinge_speed;
+    }
+
+    public void Close(){
+        StartCoroutine(CloseLongSFX());
+        current_speed = close_speed;
+        target_rot = 0;
+        open = false;
+        players_in_peek = new List<Transform>();
+    }
+
+    IEnumerator CloseLongSFX(){
+        PlaySFX(PeekSFX, transform.position);
+        yield return new WaitForSeconds(0.3f);
+        PlaySFX(CloseSFX, transform.position);
     }
 
     // Animate //
@@ -45,7 +72,12 @@ public class DoorController : MonoBehaviour{
     }
 
     void EnableCollider(){
-        DoorCollider.SetActive(Mathf.Abs(hinge_rot - target_rot) < 1f);
+        bool close_enough = Mathf.Abs(hinge_rot - target_rot) < 1f;
+        DoorCollider.SetActive(close_enough);
+        if(open && close_enough)
+            transform.tag = "Interactable";
+        else
+            transform.tag = "Untagged";
     }
 
     void SetTarget(){
@@ -57,7 +89,7 @@ public class DoorController : MonoBehaviour{
     }
 
     void LerpRotation(){
-        hinge_rot = Mathf.Lerp(hinge_rot, target_rot, hinge_speed * Time.deltaTime);
+        hinge_rot = Mathf.Lerp(hinge_rot, target_rot, current_speed * Time.deltaTime);
         Hinge.localRotation = Quaternion.Euler(0f, hinge_rot, 0f);
     }
 
@@ -72,8 +104,10 @@ public class DoorController : MonoBehaviour{
         if(open)
             return;
         if(t.tag == "Player"){
-            if(players_in_peek.Count == 0)
+            if(players_in_peek.Count == 0){
+                current_speed = hinge_speed;
                 PlaySFX(PeekSFX, transform.position);
+            }
             if(!players_in_peek.Contains(t)){
                 CheckDirection(t);
                 players_in_peek.Add(t);
@@ -94,17 +128,27 @@ public class DoorController : MonoBehaviour{
         if(open)
             return;
         if(t.tag == "Player"){
-            if(players_in_peek.Contains(t))
+            if(players_in_peek.Contains(t)){
                 players_in_peek.Remove(t);
-            if(players_in_peek.Count == 0)
-                PlaySFX(CloseSFX, transform.position);
+                if(players_in_peek.Count == 0)
+                    PlaySFX(CloseSFX, transform.position);
+            }
         }
     }
 
     public void EnterOpen(Transform t){
+        if(open)
+            return;
         if(t.tag == "Player"){
             open = true;
+            current_speed = hinge_speed;
             PlaySFX(OpenSFX, transform.position);
+            if(player != null)
+                player.OpenDoor(this);
         }
+    }
+
+    public void Slammed(){
+        current_speed = slam_speed;
     }
 }

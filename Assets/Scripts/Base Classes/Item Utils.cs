@@ -30,6 +30,8 @@ namespace ItemUtils{
     public class ItemInstance{
         
         public ItemDefinition Definition {private set; get;}
+
+        public int stored_int;
         
         public ItemInstance(ItemDefinition desc){
             Definition = desc;

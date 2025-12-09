@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour{
     [Header(" - References - ")]
     [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] ViewModelController _ViewModelController;
+    [SerializeField] PlayerController _PlayerController;
     [Header(" - Interactions - ")]
     [SerializeField] Transform HeadPoint;
     [SerializeField] LayerMask InteractLayers;
@@ -23,20 +24,22 @@ public class PlayerManager : MonoBehaviour{
     [SerializeField] Animator InteractIcon;
     [SerializeField] TMP_Text InteractText;
 
-     [Header(" - Entity/Monster API - ")]
-    [SerializeField] SpiderAutomoveTest SpiderTest;
-    [SerializeField] SpiderAutomoveTest ZombieTest;
-    
     const float interact_distance = 2f;
     const float throw_speed = 5f;
 
     ItemManager item_manager;
     Transform interact_buffer;
-    Interactable interact;
-    WorldItem item;
     bool gestures_open, right_trigger_lock;
     Seed random_seed;
     string random_tag;
+
+    [Header(" - Debug - ")]
+    public Interactable interact;
+    public WorldItem item;
+
+    [Header(" - Entity/Monster API - ")]
+    [SerializeField] SpiderAutomoveTest SpiderTest;
+    [SerializeField] SpiderAutomoveTest ZombieTest;
 
     // Start //
 
@@ -119,7 +122,7 @@ public class PlayerManager : MonoBehaviour{
     }
 
     void MarkInteract(Transform trans){
-        
+
         if(trans.tag != "Interactable" && trans.tag != "Item")
             return;
         if(trans == interact_buffer) // buffering using a transform to avoid excessive GetComponent calls
@@ -127,6 +130,13 @@ public class PlayerManager : MonoBehaviour{
         
         interact_buffer = trans;
 
+        CheckTransform(trans);
+        CheckTransform(trans.parent);
+    }
+
+    void CheckTransform(Transform trans){
+        if(trans == null)
+            return;
         if(trans.tag == "Interactable"){
             interact = trans.GetComponent<Interactable>();
             item = null;
@@ -156,13 +166,17 @@ public class PlayerManager : MonoBehaviour{
 
     // Items
 
+    public void SpawnItem(ItemInstance item, float speed){
+        item_manager.SpawnWorldItem(item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * speed + _PlayerController.true_velocity);
+    }
+
     void DropItem(){
         if(!Input.GetButtonDown("Drop Item"))
             return;
         ItemInstance dropped_item = _ViewModelController.EquippedItem();
         if(!_ViewModelController.DropItem())
             return;
-        item_manager.SpawnWorldItem(dropped_item, HeadPoint.position, HeadPoint.rotation, HeadPoint.forward * throw_speed);
+        SpawnItem(dropped_item, throw_speed);
     }
 
     // Gestures
@@ -236,6 +250,16 @@ public class PlayerManager : MonoBehaviour{
             gestures_open = !gestures_open;
             GestureMenu.SetActive(gestures_open);
             PlaySFX("UI_Crack", SFX_Lookup);
+        }
+    }
+
+    // Events //
+
+    public void OpenDoor(DoorController door){
+        if(_PlayerController.sprinting){
+            _PlayerController.AddRecoil(22f, 0f, 0f);
+            PlaySFX("Door_Slam", _PlayerController.transform.position, SFX_Lookup);
+            door.Slammed();
         }
     }
 }
