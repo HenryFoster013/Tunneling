@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using RandomUtils;
 using UnityEngine;
+using static GenericUtils;
 
 namespace StationUtils{
 
@@ -18,10 +19,6 @@ namespace StationUtils{
             additionals = TextToArray(addi);
             seed = new_seed;
         }
-
-        public string[] TextToArray(TextAsset text_asset){
-            return text_asset.text.Split(new[] {'\n'}, System.StringSplitOptions.None);
-        } 
 
         public string NextName(){
             bool additional_tag = seed.RangeInt(0, 3) == 0;

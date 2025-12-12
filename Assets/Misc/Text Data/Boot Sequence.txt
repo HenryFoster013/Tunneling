@@ -1,0 +1,42 @@
+Preparing boot sequence.
+Logging in as 'user_7'.
+Set Up Additional Binary Formats.
+Uncomplicated Firewall.
+Preparation for Network.
+Load/Save RF Kill Switch Status.
+Local Encrypted Volumes.
+Load Kernel Module apollyon_mod.
+Load Kernal Module tunneler.
+Starting ska_zz processes.
+Fetching temponic sequence.
+Managing display drivers.
+Flooring butler values.
+Starting loop service.
+Load Volatile Files and Directories.
+Trigger Host Name Lookups.
+System Initialization.
+Enabling Reporting.
+Establishing Master Survelliance line.
+Log File Rotation.
+Socket activation.
+Load Default Buses.
+Discard usused filesystem locks.
+Daily apt update and installs.
+Reporting schedular.
+Starting sound card.
+Hardware monitoring enabled.
+Load Encrypted Modules.
+Enabling Thermal Monitoring.
+Failed Boot Detection Services.
+Contacting Master Server.
+Checking Worldy Location.
+Identifying User Biometrics.
+Load Modem Managment.
+Starting Apollyon specific services.
+Flushing Old Memory.
+Referencing Blackmail Accounts.
+Connecting to Railway services.
+Reporting back to Master.
+Awaiting confirmation.
+Confirmation granted.
+Starting UI.

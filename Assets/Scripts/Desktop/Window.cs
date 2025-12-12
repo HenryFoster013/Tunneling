@@ -33,7 +33,19 @@ public class Window : MonoBehaviour, IDragHandler, IPointerDownHandler{
     public void OnDrag(PointerEventData eventData){
         if(!GotCanvas())
             return;
-        dragRectTransform.anchoredPosition += eventData.delta/canvas.scaleFactor;
+        if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            dragRectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        else
+            ProjectedTransformations(eventData);
+    }
+
+    void ProjectedTransformations(PointerEventData eventData){
+        Vector3 previousWorldPosition;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(dragRectTransform, eventData.position - eventData.delta,eventData.pressEventCamera, out previousWorldPosition);
+        Vector3 currentWorldPosition;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(dragRectTransform, eventData.position, eventData.pressEventCamera, out currentWorldPosition);
+
+        dragRectTransform.position += currentWorldPosition - previousWorldPosition;
     }
 
     public void OnPointerDown(PointerEventData eventData){

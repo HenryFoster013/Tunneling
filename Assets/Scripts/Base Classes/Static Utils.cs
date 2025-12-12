@@ -18,6 +18,9 @@ public static class GenericUtils{
             vector = vector * 0f;
     }
 
+    public static string[] TextToArray(TextAsset text_asset){
+        return text_asset.text.Split(new[] {'\n'}, System.StringSplitOptions.None);
+    } 
 }
 
 public static class SoundUtils{
