@@ -118,13 +118,13 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Reflectivity: 1
+    - _Reflectivity: 0.5
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _Transparency: 0.3
+    - _Transparency: 0.5
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

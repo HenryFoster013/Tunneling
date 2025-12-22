@@ -21,6 +21,12 @@ public static class GenericUtils{
     public static string[] TextToArray(TextAsset text_asset){
         return text_asset.text.Split(new[] {'\n'}, System.StringSplitOptions.None);
     } 
+
+    public static int FlipFlopNegation(){
+        if(Random.Range(0, 2) == 0)
+            return -1;
+        return 1;
+    }
 }
 
 public static class SoundUtils{

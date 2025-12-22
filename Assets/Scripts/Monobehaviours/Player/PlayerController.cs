@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour{
     }
 
     void Update(){
+        DebugControls();
         Movement();
         SoundEffects();
         Animate();
@@ -89,6 +90,11 @@ public class PlayerController : MonoBehaviour{
 
     void LateUpdate(){
         MouseLook();
+    }
+
+    void DebugControls(){
+        if(Input.GetKeyDown("n"))
+            CanLook = !CanLook;
     }
 
     // Camera //
