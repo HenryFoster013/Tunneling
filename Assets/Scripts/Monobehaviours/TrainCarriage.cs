@@ -6,6 +6,8 @@ public class TrainCarriage : MonoBehaviour
 {
     [Header("States")]
     public bool Open = true;
+    public bool Left = false;
+    public bool Right = true;
     public bool Moving = false;
 
     [Header("References")]
@@ -40,8 +42,8 @@ public class TrainCarriage : MonoBehaviour
         ManageLights();
 
         BaseAnim.SetBool("moving", Moving);
-        LD_Animator.SetBool("open", Open);
-        RD_Animator.SetBool("open", Open);
+        LD_Animator.SetBool("open", Open && Left);
+        RD_Animator.SetBool("open", Open && Right);
         JitterEffect.animate = Moving;
         RD_Collider.SetActive(RD_ColliderWatcher.activeSelf);
         LD_Collider.SetActive(LD_ColliderWatcher.activeSelf);
