@@ -691,8 +691,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3970402480527358820}
+  - component: {fileID: 1573745646450633147}
+  - component: {fileID: 6471989640194630078}
   m_Layer: 3
-  m_Name: Carriage
+  m_Name: Carriage (Interactive)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -715,6 +717,54 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1573745646450633147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3970402480527358819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d9dd6b3e41cc3740becf6bd86972a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Open: 1
+  Left: 0
+  Right: 1
+  Moving: 0
+  BaseAnim: {fileID: 6471989640194630078}
+  JitterEffect: {fileID: 3970402482149380181}
+  BaseMaterial: {fileID: 2100000, guid: 457b50e14fbf2514bbeb63b69471dbd1, type: 2}
+  LightFront: {fileID: 3970402480296704487}
+  LightBack: {fileID: 3970402481521153730}
+  LD_Animator: {fileID: 3970402481980543861}
+  LD_Collider: {fileID: 3970402481117766967}
+  LD_ColliderWatcher: {fileID: 3970402480945295670}
+  RD_Animator: {fileID: 3970402480265986782}
+  RD_Collider: {fileID: 3970402480372633906}
+  RD_ColliderWatcher: {fileID: 3970402481425630452}
+--- !u!95 &6471989640194630078
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3970402480527358819}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f5fd56c300444c14a949e6492645775b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3970402480740092343
 GameObject:
   m_ObjectHideFlags: 0
