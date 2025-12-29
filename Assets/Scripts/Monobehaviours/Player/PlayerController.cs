@@ -33,8 +33,8 @@ public class PlayerController : MonoBehaviour{
     const float fov_change = 6;
     const float camera_swivel_amplitude = 5f;
     const float camera_swivel_speed = 2f;
-    const float base_height = 1.5f;
-    const float crouch_height = 0.8f;
+    const float base_height = 1.85f;
+    const float crouch_height = 1f;
     const float head_height_speed = 18f;
     const float cam_float_speed = 35f;
     const float recoil_return_speed = 8f;
