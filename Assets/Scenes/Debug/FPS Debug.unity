@@ -5104,6 +5104,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door
       objectReference: {fileID: 0}
+    - target: {fileID: 5022945737196987711, guid: 044cfcae9b6967644bbc219559c6a339, type: 3}
+      propertyPath: CloseSFX
+      value: 
+      objectReference: {fileID: 11400000, guid: 8def7c21489a4f27ea6c617b45fc65d0, type: 2}
     - target: {fileID: 7906980727710057227, guid: 044cfcae9b6967644bbc219559c6a339, type: 3}
       propertyPath: m_IsActive
       value: 0
