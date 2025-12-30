@@ -1368,6 +1368,8 @@ MonoBehaviour:
   GestureMenu: {fileID: 6102417983714339853}
   InteractIcon: {fileID: 3198144247819260200}
   InteractText: {fileID: 6238870338808734895}
+  interact: {fileID: 0}
+  item: {fileID: 0}
 --- !u!1 &5897461098090460093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,7 +1674,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 12
+  m_Intensity: 15
   m_Range: 12.5
   m_SpotAngle: 72
   m_InnerSpotAngle: 51.5
