@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Door (Blue)
+  m_Name: Door (Trap)
   m_Shader: {fileID: -6465566751694194690, guid: 9933eff9887008c748dc4865f833026c, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -36,7 +36,7 @@ Material:
     - _Albedo:
         m_Texture: {fileID: 2800000, guid: 0f00c0a4ca994a941ba47a736334e8e8, type: 3}
         m_Scale: {x: 1, y: 0.25}
-        m_Offset: {x: 0, y: 0.75}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

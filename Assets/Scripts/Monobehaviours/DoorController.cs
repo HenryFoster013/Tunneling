@@ -8,18 +8,18 @@ public class DoorController : MonoBehaviour{
     [Header(" - Main - ")]
     [SerializeField] Transform Hinge;
     [SerializeField] GameObject DoorCollider;
-    [SerializeField] float MaxRotation = 110f;
     [Header(" - SFX - ")]
     [SerializeField] SoundEffect PeekSFX;
     [SerializeField] SoundEffect OpenSFX;
     [SerializeField] SoundEffect CloseSFX;
 
     PlayerManager player;
-     
-    const float peek_rotation = 25f;
-    const float hinge_speed = 5f;
-    const float close_speed = 8f;
-    const float slam_speed = 15f;
+    
+    [SerializeField] float max_rotation = 110f;
+    [SerializeField] float peek_rotation = 25f;
+    [SerializeField] float hinge_speed = 5f;
+    [SerializeField] float close_speed = 8f;
+    [SerializeField] float slam_speed = 15f;
 
     float hinge_rot, target_rot;
     float current_speed;
@@ -83,7 +83,7 @@ public class DoorController : MonoBehaviour{
     void SetTarget(){
         target_rot = 0f;
         if(open)
-            target_rot = MaxRotation * direction;
+            target_rot = max_rotation * direction;
         else if(players_in_peek.Count > 0)
             target_rot = peek_rotation * direction;
     }
