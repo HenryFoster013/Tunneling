@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Station
+  m_Name: Station Base 1
   m_Shader: {fileID: -6465566751694194690, guid: 9933eff9887008c748dc4865f833026c, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
