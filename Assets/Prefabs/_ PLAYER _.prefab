@@ -1174,6 +1174,8 @@ MonoBehaviour:
   CameraAnim: {fileID: 5897461098201668247}
   MouseSens: 150
   ControllerSens: 50
+  SpeedMod: 1
+  CanSprint: 1
   CanLook: 1
   CanMove: 1
 --- !u!114 &5897461097776437664
@@ -2274,10 +2276,10 @@ RectTransform:
   m_Father: {fileID: 5897461098090460092}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 982, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8691858021745631946
 GameObject:
