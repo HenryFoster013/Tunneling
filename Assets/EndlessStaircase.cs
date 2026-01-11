@@ -17,29 +17,86 @@ public class EndlessStaircase : MonoBehaviour
     public Color StartAmbient;
     public Color EndAmbient;
 
-    float current_floor = 0;
+    [Header("Materials")]
+    [SerializeField] Material StationMatOne;
+    [SerializeField] Material StationMatTwo;
+
+    [Header("Audio")]
+    [SerializeField] AudioSource Wind;
+    float wind;
+    [SerializeField] AudioSource Machinery;
+    float machinery;
+    [SerializeField] AudioSource Heartbeat;
+    float heartbeat;
+
+    [Header("Additonals")]
+    [SerializeField] GameObject[] Additonals;
+
+    int current_floor = 0;
     float lerped_floor = 0;
+    float lerped_transitional;
     bool initial_entry = false;
     bool buffered = false;
 
     const float transition_speed = 1f;
-    const float light_levels = 5;
+    const float light_levels = 7;
     const float floor_distance = 8.1f;
 
-
-    void Update(){
-        UpdateLights();
+    void Start(){
+        wind = Wind.volume;
+        machinery = Machinery.volume;
+        heartbeat = Heartbeat.volume;
     }
 
-    void UpdateLights(){
-        lerped_floor = Mathf.Lerp(lerped_floor, current_floor, Time.deltaTime * transition_speed);
-        float lerped_transitional = lerped_floor / light_levels;
+    void Update(){
+        LerpForwards();
+        SetLights();
+        SetMaterials();
+        SetAudios();
+        SetAdditionals();
+    }
 
+    // ANIMATION //
+
+    void LerpForwards(){
+        lerped_floor = Mathf.Lerp(lerped_floor, (float)current_floor, Time.deltaTime * transition_speed);
+        lerped_transitional = Mathf.Clamp(lerped_floor / light_levels, 0f, 1f);
+    }
+
+    void SetLights(){
         Color light_colour = Color.Lerp(StartLights, EndLights, lerped_transitional);
         foreach(Light light in Lights)
             light.color = light_colour;
 
         RenderSettings.ambientLight = Color.Lerp(StartAmbient, EndAmbient, lerped_transitional);
+    }
+
+    void SetMaterials(){
+        StationMatOne.SetFloat("_Blend", lerped_transitional * 0.6f);
+        StationMatTwo.SetFloat("_Blend", lerped_transitional * 0.6f);
+    }
+
+    void SetAudios(){
+        Wind.volume = Mathf.Lerp(0f, wind, lerped_transitional);
+        Machinery.volume = Mathf.Lerp(0f, machinery, lerped_transitional);
+        Heartbeat.volume = Mathf.Lerp(0f, heartbeat, lerped_transitional);
+    }
+
+    void SetAdditionals(){
+        if(Additonals.Length == 0)
+            return;
+
+        foreach(GameObject g in Additonals){
+            if(g != null)
+                g.SetActive(false);
+        }
+
+        if(current_floor < 0 || current_floor >= Additonals.Length)
+            return;
+        
+        if(Additonals[current_floor] != null){
+            Additonals[current_floor].SetActive(true);
+        }
     }
 
     // TELEPORTATION //
