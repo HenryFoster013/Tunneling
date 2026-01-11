@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour{
     [Header(" - Modifiers - ")]
     public float MouseSens = 150f;
     public float ControllerSens = 50f;
+    public float SpeedMod = 1f;
+    public bool CanSprint = true;
     [HideInInspector] public bool CanLook = true;
     [HideInInspector] public bool CanMove = true;
 
@@ -142,7 +144,7 @@ public class PlayerController : MonoBehaviour{
         ManageGrounded();
         walking = Mathf.Abs(target_velocity.x) > 0.5f || Mathf.Abs(target_velocity.z) > 0.5f;
         ManageCrouching();
-        sprinting = !crouching && Input.GetButton("Sprint") && Input.GetAxisRaw("Vertical") > 0.5f;
+        sprinting = CanSprint && !crouching && Input.GetButton("Sprint") && Input.GetAxisRaw("Vertical") > 0.5f;
     }
 
     void ManageGrounded(){
@@ -193,7 +195,7 @@ public class PlayerController : MonoBehaviour{
         input = input.normalized * movement_speed * MovementSpeedMultiplier();
         Vector3 camera_forward = Vector3.ProjectOnPlane(POV_Cam.transform.forward, Vector3.up).normalized;
         Vector3 camera_right = Vector3.ProjectOnPlane(POV_Cam.transform.right, Vector3.up).normalized;
-        target_velocity = (camera_forward * input.z + camera_right * input.x);
+        target_velocity = (camera_forward * input.z + camera_right * input.x) * SpeedMod;
     }
 
     void ApplyVelocity(){        

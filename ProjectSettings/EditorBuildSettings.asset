@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Staircase Introduction.unity
+    guid: 17c2927f7ea8efe5b8465cecafeb47e7
+  - enabled: 1
     path: Assets/Scenes/Debug/FPS Debug.unity
     guid: 24a22f7e1fe0d4e41919baa078143fb8
   - enabled: 1
