@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 145db9d5b91535341a353e4acc28fcf2, type: 3}
+  m_Name: Footstep Echoed
+  m_EditorClassIdentifier: 
+  Name: Footstep
+  BaseClip: {fileID: 0}
+  ClipRange:
+  - {fileID: 8300000, guid: ebb5f67c5df7ffd58a2d4230b3ddd09b, type: 3}
+  - {fileID: 8300000, guid: 1aedc966e4653cd119c6979fdcb5649d, type: 3}
+  - {fileID: 8300000, guid: b47a2faa82318a67eb40c4eb7638900c, type: 3}
+  - {fileID: 8300000, guid: efe1ed975cd876f3f8a2d3a42e2d7a0b, type: 3}
+  - {fileID: 8300000, guid: 840781534f8cb50aca22faead5c2a91a, type: 3}
+  - {fileID: 8300000, guid: 5653c7946716e3e08a94038d3df4e9e4, type: 3}
+  - {fileID: 8300000, guid: 0d2411d53b2297f508510d454107088f, type: 3}
+  - {fileID: 8300000, guid: 52136166400241607aa8ed6d26828035, type: 3}
+  - {fileID: 8300000, guid: 84047b544f4f260898b05e6b46fc9a3e, type: 3}
+  - {fileID: 8300000, guid: a44ae7157bea32aefa06e9b1cb9b1331, type: 3}
+  Mixer: {fileID: 8193749847766800399, guid: fc22d7ab16e1e074bb3c9e43106c7086, type: 2}
+  BasePitch: 1.1
+  PitchVariation: 0.1
+  BaseVolume: 0.4
+  VolumeVariation: 0.075
+  _3D: 0
+  Radius: 0

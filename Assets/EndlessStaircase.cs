@@ -5,13 +5,44 @@ using UnityEngine;
 public class EndlessStaircase : MonoBehaviour
 {
     
+    [Header("Teleportation")]
     [SerializeField] PlayerController Player;
     [SerializeField] GameObject[] InitialEntryEnable;
     [SerializeField] GameObject[] InitialEntryDisable;
-    [SerializeField] float FloorDistance = 8.1f;
 
+    [Header("Lighting")]
+    [SerializeField] Light[] Lights;
+    public Color StartLights;
+    public Color EndLights;
+    public Color StartAmbient;
+    public Color EndAmbient;
+
+    float current_floor = 0;
+    float lerped_floor = 0;
     bool initial_entry = false;
     bool buffered = false;
+
+    const float transition_speed = 1f;
+    const float light_levels = 5;
+    const float floor_distance = 8.1f;
+
+
+    void Update(){
+        UpdateLights();
+    }
+
+    void UpdateLights(){
+        lerped_floor = Mathf.Lerp(lerped_floor, current_floor, Time.deltaTime * transition_speed);
+        float lerped_transitional = lerped_floor / light_levels;
+
+        Color light_colour = Color.Lerp(StartLights, EndLights, lerped_transitional);
+        foreach(Light light in Lights)
+            light.color = light_colour;
+
+        RenderSettings.ambientLight = Color.Lerp(StartAmbient, EndAmbient, lerped_transitional);
+    }
+
+    // TELEPORTATION //
 
     bool Buffered(){
         if(buffered){
@@ -49,15 +80,17 @@ public class EndlessStaircase : MonoBehaviour
         if(Buffered())
             return;
 
-        print("Top Trigger");
-        Player.Teleport(new Vector3(0, -1f, 0) * FloorDistance);
+        Player.Teleport(new Vector3(0, -1f, 0) * floor_distance);
+        current_floor--;
+        if(current_floor < 0)
+            current_floor = 0;
     }
 
     public void BottomColliderEntry(){
         if(Buffered())
             return;
-
-        print("Bottom Trigger");
-        Player.Teleport(new Vector3(0, 1f, 0) * FloorDistance);
+        
+        Player.Teleport(new Vector3(0, 1f, 0) * floor_distance);
+        current_floor++;
     }
 }

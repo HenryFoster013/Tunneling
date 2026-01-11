@@ -9,9 +9,12 @@ public class PlayerController : MonoBehaviour{
 
     [Header(" - Main - ")]
     [SerializeField] CharacterController _CharacterController;
-    [SerializeField] SoundEffectLookup SFX_Lookup;
     [SerializeField] LayerMask GroundLayer;
     [SerializeField] PlayerHeadsUpUI HeadsUp;
+    [Header (" - Sound - ")]
+    [SerializeField] SoundEffectLookup SFX_Lookup;
+    [SerializeField] SoundEffect Footstep;
+    [SerializeField] bool DisabledLandingSFX;
     [Header(" - Camera - ")]
     [SerializeField] Transform UpperHeadPivot;
     [SerializeField] Transform LowerHeadPivot;
@@ -153,9 +156,9 @@ public class PlayerController : MonoBehaviour{
     }
 
     void PlayGroundedSFX(){
-        if(grounded && grounded != grounded_buffer){
-            PlaySFX("Footstep", SFX_Lookup);
-            PlaySFX("Footstep", SFX_Lookup);
+        if(grounded && grounded != grounded_buffer && !DisabledLandingSFX){
+            PlaySFX(Footstep);
+            PlaySFX(Footstep);
         }
         grounded_buffer = grounded;
     }
@@ -327,7 +330,7 @@ public class PlayerController : MonoBehaviour{
         if(!grounded)
             return;
         if(!crouching)
-            PlaySFX("Footstep", SFX_Lookup);
+            PlaySFX(Footstep);
         else
             PlaySFX("Footstep_Light", SFX_Lookup);
     }

@@ -1162,11 +1162,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CharacterController: {fileID: 5897461097776437667}
-  SFX_Lookup: {fileID: 11400000, guid: 4dde26c82c18a8645adc92154555d5c3, type: 2}
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
   HeadsUp: {fileID: 5897461096895600518}
+  SFX_Lookup: {fileID: 11400000, guid: 4dde26c82c18a8645adc92154555d5c3, type: 2}
+  Footstep: {fileID: 11400000, guid: 44398fcb4bf541c41823e4fe1745b622, type: 2}
   UpperHeadPivot: {fileID: 5897461098201668240}
   LowerHeadPivot: {fileID: 5897461098156940084}
   POV_Cam: {fileID: 5897461096485859449}
