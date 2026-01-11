@@ -225,6 +225,12 @@ public class PlayerController : MonoBehaviour{
         true_velocity = Vector3.Lerp(true_velocity, target_velocity, Time.deltaTime * acceleration);
     }
 
+    public void Teleport(Vector3 distance){
+        _CharacterController.enabled = false;
+        transform.position += distance;
+        _CharacterController.enabled = true;
+    }
+
     // Animation ///
 
     void Animate(){
