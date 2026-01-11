@@ -22,6 +22,7 @@ public class EndlessStaircase : MonoBehaviour
     [SerializeField] Material StationMatTwo;
 
     [Header("Audio")]
+    [SerializeField] GameObject Music;
     [SerializeField] AudioSource Wind;
     float wind;
     [SerializeField] AudioSource Machinery;
@@ -38,11 +39,26 @@ public class EndlessStaircase : MonoBehaviour
     bool initial_entry = false;
     bool buffered = false;
 
+    const int music_floor = 2;
+    const int shading_offset = 2;
     const float transition_speed = 1f;
     const float light_levels = 7;
     const float floor_distance = 8.1f;
 
     void Start(){
+        SetupAudio();
+        SetupToggles();
+    }
+
+    void SetupToggles(){
+        foreach(GameObject g in InitialEntryDisable)
+            g.SetActive(true);
+        foreach(GameObject g in InitialEntryEnable)
+            g.SetActive(false);
+    }
+
+    void SetupAudio(){
+        Music.SetActive(false);
         wind = Wind.volume;
         machinery = Machinery.volume;
         heartbeat = Heartbeat.volume;
@@ -60,7 +76,7 @@ public class EndlessStaircase : MonoBehaviour
 
     void LerpForwards(){
         lerped_floor = Mathf.Lerp(lerped_floor, (float)current_floor, Time.deltaTime * transition_speed);
-        lerped_transitional = Mathf.Clamp(lerped_floor / light_levels, 0f, 1f);
+        lerped_transitional = Mathf.Clamp(((lerped_floor - shading_offset) / light_levels), 0f, 1f);
     }
 
     void SetLights(){
@@ -132,8 +148,7 @@ public class EndlessStaircase : MonoBehaviour
     }
 
     public void TopColliderEntry(){
-        if(CheckInitial())
-            return;
+        CheckInitial();
         if(Buffered())
             return;
 
@@ -149,5 +164,6 @@ public class EndlessStaircase : MonoBehaviour
         
         Player.Teleport(new Vector3(0, 1f, 0) * floor_distance);
         current_floor++;
+        Music.SetActive(current_floor >= music_floor);
     }
 }
