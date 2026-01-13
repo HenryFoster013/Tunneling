@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour{
     public float MouseSens = 150f;
     public float ControllerSens = 50f;
     public float SpeedMod = 1f;
+    public float FootstepMod = 1f;
     public bool CanSprint = true;
     [HideInInspector] public bool CanLook = true;
     [HideInInspector] public bool CanMove = true;
@@ -322,8 +323,8 @@ public class PlayerController : MonoBehaviour{
 
     float GetFootstepDelay(){
         if(sprinting)
-            return walk_ftsp_period / sprint_multipler;
-        return walk_ftsp_period;
+            return walk_ftsp_period / (sprint_multipler * FootstepMod);
+        return walk_ftsp_period / FootstepMod;
     }
 
     void FootstepSFX(){

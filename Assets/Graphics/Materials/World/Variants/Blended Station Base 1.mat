@@ -101,7 +101,7 @@ Material:
     - _Additional_Brightness: 0.03
     - _Additional_Lightness: 0
     - _AlphaClip: 0
-    - _Blend: 0.51418126
+    - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
