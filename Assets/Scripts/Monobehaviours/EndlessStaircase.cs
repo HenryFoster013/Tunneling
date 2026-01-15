@@ -7,8 +7,6 @@ public class EndlessStaircase : MonoBehaviour
     
     [Header("Teleportation")]
     [SerializeField] PlayerController Player;
-    [SerializeField] GameObject[] InitialEntryEnable;
-    [SerializeField] GameObject[] InitialEntryDisable;
 
     [Header("Lighting")]
     [SerializeField] Light[] Lights;
@@ -32,17 +30,25 @@ public class EndlessStaircase : MonoBehaviour
 
     [Header("Additonals")]
     [SerializeField] GameObject[] Additonals;
-
+    [SerializeField] GameObject[] EnabledOnDefault;
+    [SerializeField] GameObject[] DisabledOnDefault;
+    [SerializeField] GameObject[] InitialEntryEnable;
+    [SerializeField] GameObject[] InitialEntryDisable;
+    [SerializeField] GameObject[] EnableOnEnding;
+    [SerializeField] GameObject[] DisableOnEnding;
+ 
     int current_floor = 0;
     float lerped_floor = 0;
     float lerped_transitional;
     bool initial_entry = false;
     bool buffered = false;
+    bool in_ending = false;
+    bool ending_buffer = false;
 
     const int music_floor = 2;
     const int shading_offset = 2;
     const float transition_speed = 1f;
-    const float light_levels = 7;
+    const float light_levels = 6;
     const float floor_distance = 8.1f;
 
     void Start(){
@@ -51,9 +57,9 @@ public class EndlessStaircase : MonoBehaviour
     }
 
     void SetupToggles(){
-        foreach(GameObject g in InitialEntryDisable)
+        foreach(GameObject g in EnabledOnDefault)
             g.SetActive(true);
-        foreach(GameObject g in InitialEntryEnable)
+        foreach(GameObject g in DisabledOnDefault)
             g.SetActive(false);
     }
 
@@ -148,22 +154,43 @@ public class EndlessStaircase : MonoBehaviour
     }
 
     public void TopColliderEntry(){
-        CheckInitial();
         if(Buffered())
             return;
 
-        Player.Teleport(new Vector3(0, -1f, 0) * floor_distance);
-        current_floor--;
-        if(current_floor < 0)
-            current_floor = 0;
+        CheckInitial();
+        if(!in_ending)
+            Player.Teleport(new Vector3(0, -1f, 0) * floor_distance);
+        else{
+            if(ending_buffer)
+                Player.Teleport(new Vector3(0, -1f, 0) * floor_distance);
+            ending_buffer = true;
+        }
     }
 
     public void BottomColliderEntry(){
+        
         if(Buffered())
             return;
-        
+
         Player.Teleport(new Vector3(0, 1f, 0) * floor_distance);
-        current_floor++;
+        if(!in_ending){
+            current_floor++;
+            CheckEnding();
+        }
+    }
+
+    void CheckEnding(){
         Music.SetActive(current_floor >= music_floor);
+        if(current_floor == Additonals.Length - 1){
+            foreach(GameObject g in EnableOnEnding)
+                g.SetActive(true);
+            foreach(GameObject g in DisableOnEnding)
+                g.SetActive(false);
+            foreach(GameObject g in Additonals){
+                if(g != null)
+                    g.SetActive(false);
+            }
+            in_ending = true;
+        }
     }
 }
