@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Cairn Introduction.unity
+    guid: a03efc8c2452aec84aba141f4a0a47dc
+  - enabled: 1
     path: Assets/Scenes/Staircase Introduction.unity
     guid: 17c2927f7ea8efe5b8465cecafeb47e7
   - enabled: 1
