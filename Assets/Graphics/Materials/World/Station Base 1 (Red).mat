@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Blended Station Base 1
-  m_Shader: {fileID: -6465566751694194690, guid: d550f324522810775bb3925219702123, type: 3}
+  m_Name: Station Base 1 (Red)
+  m_Shader: {fileID: -6465566751694194690, guid: 9933eff9887008c748dc4865f833026c, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -22,10 +22,6 @@ Material:
     m_TexEnvs:
     - _Albedo:
         m_Texture: {fileID: 2800000, guid: 4af3d32df477e647dbadc3b7d6344890, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Albedo_Overlay:
-        m_Texture: {fileID: 2800000, guid: 8cbfddeb0945bf035a4ea0c66da8b4e6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -49,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emission:
-        m_Texture: {fileID: 2800000, guid: ad6397c4032d39911b00f77d6f19b93c, type: 3}
+        m_Texture: {fileID: 2800000, guid: f8c30a439b27de04aafeb80fec4c979e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -101,7 +97,7 @@ Material:
     - _Additional_Brightness: 0.03
     - _Additional_Lightness: 0
     - _AlphaClip: 0
-    - _Blend: 0.29999954
+    - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
