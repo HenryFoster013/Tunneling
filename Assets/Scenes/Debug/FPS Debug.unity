@@ -283,7 +283,7 @@ Transform:
   - {fileID: 86025385}
   - {fileID: 2072721230}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &49530274 stripped
 Transform:
@@ -2176,6 +2176,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5508582352809766208, guid: e9bec06813d87c8a68c984bb1c3f6b3b, type: 3}
   m_PrefabInstance: {fileID: 5474357393649271783}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &892145323430424027
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00000047683716
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -11.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8347234500611298226, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690967758158039304, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
+      propertyPath: m_Name
+      value: 'Transport Gate '
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b518a2b6c22dc4b47a52d11808a1051f, type: 3}
 --- !u!4 &901057474113362580 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5877331756743948662, guid: 88e1c9e5c131ac0a9a36bd427f46ae19, type: 3}
